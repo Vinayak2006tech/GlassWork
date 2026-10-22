@@ -31,6 +31,7 @@ interface TaskModalProps {
   onClose: () => void;
   projectId: string;
   taskToEdit?: Task | null;
+  defaultStatus?: TaskStatus;
 }
 
 const getDefaultDueDate = (): string => new Date().toISOString().split('T')[0];
@@ -40,6 +41,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   onClose,
   projectId,
   taskToEdit,
+  defaultStatus = 'TODO',
 }) => {
   const isEditing = Boolean(taskToEdit);
   const createTaskMutation = useCreateTask();
@@ -65,9 +67,9 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     defaultValues: {
       title: '',
       description: '',
-      status: 'TODO',
+      status: defaultStatus,
       priority: 'MEDIUM',
-      assigneeId: '',
+      assigneeId: userList[0]?.id || '',
       dueDate: getDefaultDueDate(),
     },
   });
@@ -89,13 +91,15 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       reset({
         title: '',
         description: '',
-        status: 'TODO',
+        status: defaultStatus,
         priority: 'MEDIUM',
         assigneeId: userList[0]?.id || '',
         dueDate: getDefaultDueDate(),
       });
     }
-  }, [isOpen, taskToEdit, reset, userList]);
+  }, [isOpen, taskToEdit, defaultStatus, reset, userList]);
+
+
 
   const onSubmit = async (data: TaskFormData) => {
     try {

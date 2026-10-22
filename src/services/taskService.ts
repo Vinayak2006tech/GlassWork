@@ -109,4 +109,44 @@ export const taskService = {
       setStoredItem(STORAGE_KEYS.TASKS, filtered);
     });
   },
+
+  /**
+   * Batch updates status for multiple tasks.
+   */
+  async batchUpdateStatus(ids: string[], status: TaskStatus): Promise<Task[]> {
+    initializeStorage();
+    return simulateNetwork(() => {
+      const allTasks = getStoredItem<Task[]>(STORAGE_KEYS.TASKS, []);
+      const idSet = new Set(ids);
+      const now = new Date().toISOString();
+
+      const updated = allTasks.map((t) => {
+        if (idSet.has(t.id)) {
+          return {
+            ...t,
+            status,
+            updatedAt: now,
+          };
+        }
+        return t;
+      });
+
+      setStoredItem(STORAGE_KEYS.TASKS, updated);
+      return updated.filter((t) => idSet.has(t.id));
+    });
+  },
+
+  /**
+   * Batch deletes multiple tasks by ID.
+   */
+  async batchDeleteTasks(ids: string[]): Promise<void> {
+    initializeStorage();
+    return simulateNetwork(() => {
+      const allTasks = getStoredItem<Task[]>(STORAGE_KEYS.TASKS, []);
+      const idSet = new Set(ids);
+      const filtered = allTasks.filter((t) => !idSet.has(t.id));
+      setStoredItem(STORAGE_KEYS.TASKS, filtered);
+    });
+  },
 };
+

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useProject } from '../../hooks/useProjects';
 import { useTasks } from '../../hooks/useTasks';
 import { useUsers } from '../../hooks/useUsers';
+import { useAuth } from '../../hooks/useAuth';
 import { calculateTaskStats } from '../../utils/taskStats';
 import { filterAndSortTasks } from '../../utils/filterAndSortTasks';
 import { Task, TaskPriority, TaskSortField, TaskStatus, SortOrder } from '../../types/models';
 import { TaskTable } from './TaskTable';
+import { KanbanBoard } from './KanbanBoard';
 import { TaskModal } from './TaskModal';
 import { DeleteTaskModal } from './DeleteTaskModal';
 import { ProgressBar } from '../../components/ui/ProgressBar';
@@ -24,16 +26,25 @@ import {
   Calendar,
   X,
   ListTodo,
+  Table as TableIcon,
+  Kanban,
+  User as UserIcon,
+  Flame,
+  Clock,
+  CheckCircle2,
 } from 'lucide-react';
 
 export const ProjectDetailsPage: React.FC = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { user: currentUser } = useAuth();
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Modals state
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [initialStatusForNewTask, setInitialStatusForNewTask] = useState<TaskStatus>('TODO');
 
   // Queries
   const {
@@ -62,25 +73,66 @@ export const ProjectDetailsPage: React.FC = () => {
   const assigneeId = searchParams.get('assigneeId') || 'ALL';
   const sortBy = (searchParams.get('sortBy') as TaskSortField) || 'dueDate';
   const sortOrder = (searchParams.get('sortOrder') as SortOrder) || 'asc';
+  const view = searchParams.get('view') === 'board' ? 'board' : 'table';
 
   // Helper to update URL params
-  const updateFilter = (key: string, value: string) => {
-    setSearchParams(
-      (prev) => {
-        const next = new URLSearchParams(prev);
-        if (value && value !== 'ALL') {
-          next.set(key, value);
-        } else {
-          next.delete(key);
-        }
-        return next;
-      },
-      { replace: true }
-    );
-  };
+  const updateFilter = React.useCallback(
+    (key: string, value: string) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (value && value !== 'ALL' && !(key === 'view' && value === 'table')) {
+            next.set(key, value);
+          } else {
+            next.delete(key);
+          }
+          return next;
+        },
+        { replace: true }
+      );
+    },
+    [setSearchParams]
+  );
+
+  // Keyboard shortcuts: C (create task), / (focus search), 1 (table), 2 (board)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeTag = (document.activeElement?.tagName || '').toLowerCase();
+      const isInput =
+        activeTag === 'input' ||
+        activeTag === 'textarea' ||
+        activeTag === 'select' ||
+        (document.activeElement as HTMLElement)?.isContentEditable;
+
+      if (isInput) return;
+
+      if (e.key.toLowerCase() === 'c') {
+        e.preventDefault();
+        setTaskToEdit(null);
+        setInitialStatusForNewTask('TODO');
+        setIsTaskModalOpen(true);
+      } else if (e.key === '/') {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      } else if (e.key === '1') {
+        e.preventDefault();
+        updateFilter('view', 'table');
+      } else if (e.key === '2') {
+        e.preventDefault();
+        updateFilter('view', 'board');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [updateFilter]);
+
 
   const handleClearFilters = () => {
-    setSearchParams(new URLSearchParams(), { replace: true });
+    const currentView = searchParams.get('view');
+    const next = new URLSearchParams();
+    if (currentView) next.set('view', currentView);
+    setSearchParams(next, { replace: true });
   };
 
   const hasActiveFilters =
@@ -158,18 +210,18 @@ export const ProjectDetailsPage: React.FC = () => {
   const assigneeFilterOptions = [
     { value: 'ALL', label: 'All Assignees' },
     ...project.memberIds.map((memberId) => {
-      const user = userMap.get(memberId);
+      const u = userMap.get(memberId);
       return {
         value: memberId,
-        label: user ? user.name : memberId,
+        label: u ? u.name : memberId,
       };
     }),
   ];
 
   return (
     <div className="space-y-6">
-      {/* Top navigation breadcrumb */}
-      <div>
+      {/* Top navigation breadcrumb & View Switcher */}
+      <div className="flex items-center justify-between gap-4">
         <Link
           to="/projects"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded p-1 transition-colors"
@@ -177,6 +229,38 @@ export const ProjectDetailsPage: React.FC = () => {
           <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           <span>Back to Projects</span>
         </Link>
+
+        {/* View Toggle: Table ↔ Board */}
+        <div className="inline-flex p-1 rounded-xl bg-white/60 border border-white/80 shadow-xs backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => updateFilter('view', 'table')}
+            aria-pressed={view === 'table'}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              view === 'table'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            }`}
+          >
+            <TableIcon className="w-3.5 h-3.5" />
+            <span>Table</span>
+            <kbd className={`text-[10px] ml-0.5 px-1 rounded ${view === 'table' ? 'bg-indigo-700/80 text-white' : 'bg-slate-200/80 text-slate-600'}`}>1</kbd>
+          </button>
+          <button
+            type="button"
+            onClick={() => updateFilter('view', 'board')}
+            aria-pressed={view === 'board'}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+              view === 'board'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+            }`}
+          >
+            <Kanban className="w-3.5 h-3.5" />
+            <span>Board</span>
+            <kbd className={`text-[10px] ml-0.5 px-1 rounded ${view === 'board' ? 'bg-indigo-700/80 text-white' : 'bg-slate-200/80 text-slate-600'}`}>2</kbd>
+          </button>
+        </div>
       </div>
 
       {/* Project Header Card */}
@@ -261,14 +345,93 @@ export const ProjectDetailsPage: React.FC = () => {
               leftIcon={<Plus className="w-4 h-4" />}
               onClick={() => {
                 setTaskToEdit(null);
+                setInitialStatusForNewTask('TODO');
                 setIsTaskModalOpen(true);
               }}
             >
-              Add Task
+              Add Task <kbd className="hidden sm:inline text-[10px] ml-1.5 px-1.5 py-0.5 rounded bg-indigo-700/80 text-white font-mono">C</kbd>
             </Button>
           </div>
         </div>
       </GlassCard>
+
+      {/* Quick Filter Presets Chips */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+        <span className="text-slate-400 font-semibold uppercase text-[10px] tracking-wider shrink-0 mr-1">
+          Quick Filters:
+        </span>
+        <button
+          type="button"
+          onClick={() => {
+            updateFilter('assigneeId', 'ALL');
+            updateFilter('status', 'ALL');
+            updateFilter('priority', 'ALL');
+          }}
+          className={`px-3 py-1 rounded-full font-medium transition-colors shrink-0 ${
+            assigneeId === 'ALL' && status === 'ALL' && priority === 'ALL'
+              ? 'bg-indigo-600 text-white shadow-xs'
+              : 'bg-white/60 hover:bg-white text-slate-600 border border-slate-200/60'
+          }`}
+        >
+          All Tasks
+        </button>
+
+        {currentUser && (
+          <button
+            type="button"
+            onClick={() =>
+              updateFilter('assigneeId', assigneeId === currentUser.id ? 'ALL' : currentUser.id)
+            }
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium transition-colors shrink-0 ${
+              assigneeId === currentUser.id
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'bg-white/60 hover:bg-white text-slate-600 border border-slate-200/60'
+            }`}
+          >
+            <UserIcon className="w-3 h-3" />
+            <span>My Tasks</span>
+          </button>
+        )}
+
+        <button
+          type="button"
+          onClick={() => updateFilter('priority', priority === 'HIGH' ? 'ALL' : 'HIGH')}
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium transition-colors shrink-0 ${
+            priority === 'HIGH'
+              ? 'bg-rose-600 text-white shadow-xs'
+              : 'bg-white/60 hover:bg-white text-slate-600 border border-slate-200/60'
+          }`}
+        >
+          <Flame className="w-3 h-3 text-rose-400" />
+          <span>High Priority</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => updateFilter('status', status === 'IN_PROGRESS' ? 'ALL' : 'IN_PROGRESS')}
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium transition-colors shrink-0 ${
+            status === 'IN_PROGRESS'
+              ? 'bg-amber-600 text-white shadow-xs'
+              : 'bg-white/60 hover:bg-white text-slate-600 border border-slate-200/60'
+          }`}
+        >
+          <Clock className="w-3 h-3 text-amber-400" />
+          <span>In Progress</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => updateFilter('status', status === 'DONE' ? 'ALL' : 'DONE')}
+          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full font-medium transition-colors shrink-0 ${
+            status === 'DONE'
+              ? 'bg-emerald-600 text-white shadow-xs'
+              : 'bg-white/60 hover:bg-white text-slate-600 border border-slate-200/60'
+          }`}
+        >
+          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+          <span>Completed</span>
+        </button>
+      </div>
 
       {/* Controls & Filters Bar */}
       <div className="p-5 rounded-2xl glass-card space-y-3">
@@ -294,9 +457,10 @@ export const ProjectDetailsPage: React.FC = () => {
           {/* Title search */}
           <div className="lg:col-span-2">
             <Input
+              ref={searchInputRef}
               label="Search Title"
               type="search"
-              placeholder="Search tasks..."
+              placeholder="Search tasks... (Press / to focus)"
               value={search}
               onChange={(e) => updateFilter('search', e.target.value)}
               leftIcon={<Search className="w-3.5 h-3.5" />}
@@ -376,6 +540,7 @@ export const ProjectDetailsPage: React.FC = () => {
           actionLabel="Add First Task"
           onAction={() => {
             setTaskToEdit(null);
+            setInitialStatusForNewTask('TODO');
             setIsTaskModalOpen(true);
           }}
         />
@@ -392,19 +557,38 @@ export const ProjectDetailsPage: React.FC = () => {
         />
       )}
 
-      {/* 3. Render Table */}
+      {/* 3. Render Table or Board View */}
       {filteredTasks.length > 0 && (
-        <TaskTable
-          tasks={filteredTasks}
-          users={userList}
-          onEditTask={(task) => {
-            setTaskToEdit(task);
-            setIsTaskModalOpen(true);
-          }}
-          onDeleteTask={(task) => {
-            setTaskToDelete(task);
-          }}
-        />
+        view === 'board' ? (
+          <KanbanBoard
+            tasks={filteredTasks}
+            users={userList}
+            onEditTask={(task) => {
+              setTaskToEdit(task);
+              setIsTaskModalOpen(true);
+            }}
+            onDeleteTask={(task) => {
+              setTaskToDelete(task);
+            }}
+            onAddTask={(statusForNewTask) => {
+              setTaskToEdit(null);
+              setInitialStatusForNewTask(statusForNewTask);
+              setIsTaskModalOpen(true);
+            }}
+          />
+        ) : (
+          <TaskTable
+            tasks={filteredTasks}
+            users={userList}
+            onEditTask={(task) => {
+              setTaskToEdit(task);
+              setIsTaskModalOpen(true);
+            }}
+            onDeleteTask={(task) => {
+              setTaskToDelete(task);
+            }}
+          />
+        )
       )}
 
       {/* Add / Edit Task Modal */}
@@ -417,6 +601,7 @@ export const ProjectDetailsPage: React.FC = () => {
           }}
           projectId={projectId}
           taskToEdit={taskToEdit}
+          defaultStatus={initialStatusForNewTask}
         />
       )}
 

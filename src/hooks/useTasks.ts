@@ -83,3 +83,39 @@ export function useDeleteTask() {
     },
   });
 }
+
+export function useBatchUpdateTasks() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ ids, status }: { ids: string[]; status: import('../types/models').TaskStatus }) =>
+      taskService.batchUpdateStatus(ids, status),
+    onSuccess: (updated) => {
+      queryClient.invalidateQueries({ queryKey: TASK_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.all });
+      toast.success(`Updated ${updated.length} tasks successfully.`);
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Failed to update tasks';
+      toast.error(msg);
+    },
+  });
+}
+
+export function useBatchDeleteTasks() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (ids: string[]) => taskService.batchDeleteTasks(ids),
+    onSuccess: (_, ids) => {
+      queryClient.invalidateQueries({ queryKey: TASK_KEYS.all });
+      queryClient.invalidateQueries({ queryKey: PROJECT_KEYS.all });
+      toast.success(`Deleted ${ids.length} tasks successfully.`);
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Failed to delete tasks';
+      toast.error(msg);
+    },
+  });
+}
+

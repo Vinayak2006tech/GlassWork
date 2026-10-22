@@ -71,7 +71,7 @@ The app includes pre-seeded demo credentials displayed in a quick-hint box on th
 | Command | Description |
 | :--- | :--- |
 | `npm run dev` | Starts Vite dev server with Hot Module Replacement (HMR) at `localhost:5173` |
-| `npm test` | Runs the full Vitest suite in run mode (19 behaviour-focused tests across 7 test suites) |
+| `npm test` | Runs the full Vitest suite in run mode (21 behaviour-focused tests across 8 test suites) |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run lint` | Lints TypeScript and TSX files with ESLint + `eslint-plugin-jsx-a11y` |
 | `npm run lint:fix` | Automatically fixes mechanical ESLint issues |
@@ -94,7 +94,7 @@ src/
 ├── components/
 │   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback, GlobalIridescenceBackground
 │   ├── three/          # HeroScene (2D glass illustration), ReducedMotionFallback
-│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, DitherVeil
+│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, DitherVeil, CommandPalette, KeyboardShortcutsModal
 ├── data/
 │   └── seed.ts         # 5 users, 4 projects, 20 tasks, dynamic date anchors
 ├── features/
@@ -102,13 +102,14 @@ src/
 │   ├── dashboard/      # DashboardPage (metrics, overdue/due soon, hero strip)
 │   ├── notfound/       # NotFoundPage (404)
 │   ├── projects/       # ProjectsPage, ProjectModal
-│   └── tasks/          # ProjectDetailsPage, TaskTable, TaskModal, DeleteTaskModal
+│   └── tasks/          # ProjectDetailsPage, TaskTable, KanbanBoard, TaskModal, DeleteTaskModal
 ├── hooks/              # useTasks, useProjects, useUsers, useDebounce, useAuth, usePrefersReducedMotion
 ├── services/           # api.ts (delay + failure engine), authService, projectService, taskService, userService
 ├── test/               # setup.ts, testUtils.tsx (renderWithProviders & visual mocks)
 ├── types/              # models.ts (User, Project, Task, TaskStats, TaskFilters)
 └── utils/              # filterAndSortTasks, taskStats, dates
 ```
+
 
 ---
 
@@ -176,7 +177,7 @@ Execute the test suite with the exact test command:
 npm test
 ```
 
-The test suite runs **19 automated tests across 7 test suites** using Vitest and React Testing Library, achieving a 100% pass rate:
+The test suite runs **21 automated tests across 8 test suites** using Vitest and React Testing Library, achieving a 100% pass rate:
 
 1. **`LoginForm.test.tsx` (3 tests)**:
    - Validates email and password required field validation errors.
@@ -201,6 +202,10 @@ The test suite runs **19 automated tests across 7 test suites** using Vitest and
    - Handles empty task lists without errors.
 7. **`Iridescence.test.tsx` (1 test)**:
    - Renders ambient shader component container safely in headless JSDOM without WebGL context.
+8. **`PowerFeatures.test.tsx` (2 tests)**:
+   - Renders all three Kanban board columns, group status counts, and 1-click status advances.
+   - Verifies multi-select checkbox workflows and floating batch action bar.
+
 
 ---
 
