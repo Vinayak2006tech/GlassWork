@@ -14,11 +14,16 @@ export const GlassCard: React.FC<GlassCardProps> = ({
 }) => {
   return (
     <div
-      className={`glass-card rounded-xl p-5 ${
+      className={`glass-card rounded-2xl p-6 relative overflow-hidden ${
         hoverEffect ? 'glass-card-hover' : ''
       } ${className}`}
       {...props}
     >
+      {/* Subtle top edge gloss reflection */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/80 to-transparent"
+        aria-hidden="true"
+      />
       {children}
     </div>
   );

@@ -230,7 +230,7 @@ export const ProjectDetailsPage: React.FC = () => {
           </div>
 
           {/* Progress & Add Task Button */}
-          <div className="w-full lg:w-80 flex flex-col justify-between p-4 rounded-xl bg-slate-50/80 border border-slate-200/80">
+          <div className="w-full lg:w-80 flex flex-col justify-between p-4 rounded-2xl bg-white/50 backdrop-blur-md border border-white/70 shadow-xs">
             <div className="mb-4">
               <ProgressBar
                 value={stats.completionPercentage}
@@ -271,7 +271,7 @@ export const ProjectDetailsPage: React.FC = () => {
       </GlassCard>
 
       {/* Controls & Filters Bar */}
-      <div className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-xs space-y-3">
+      <div className="p-5 rounded-2xl glass-card space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
             <Filter className="w-4 h-4 text-indigo-600" aria-hidden="true" />

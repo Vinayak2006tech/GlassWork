@@ -158,7 +158,7 @@ export const DashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Overdue Tasks */}
         <GlassCard className="flex flex-col h-full">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+          <div className="flex items-center justify-between pb-3 border-b border-white/60 mb-3">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-rose-50 text-rose-600">
                 <AlertTriangle className="w-4 h-4" aria-hidden="true" />
@@ -175,7 +175,7 @@ export const DashboardPage: React.FC = () => {
               No overdue tasks. All projects are on track!
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100 flex-1 overflow-y-auto max-h-80">
+            <ul className="divide-y divide-white/40 flex-1 overflow-y-auto max-h-80">
               {overdueTasks.map((task) => {
                 const project = projectMap.get(task.projectId);
                 return (
@@ -208,7 +208,7 @@ export const DashboardPage: React.FC = () => {
 
         {/* Due in Next 7 Days */}
         <GlassCard className="flex flex-col h-full">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+          <div className="flex items-center justify-between pb-3 border-b border-white/60 mb-3">
             <div className="flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-amber-50 text-amber-600">
                 <Calendar className="w-4 h-4" aria-hidden="true" />
@@ -225,7 +225,7 @@ export const DashboardPage: React.FC = () => {
               No tasks due in the upcoming week.
             </p>
           ) : (
-            <ul className="divide-y divide-slate-100 flex-1 overflow-y-auto max-h-80">
+            <ul className="divide-y divide-white/40 flex-1 overflow-y-auto max-h-80">
               {dueSoonTasks.map((task) => {
                 const project = projectMap.get(task.projectId);
                 return (

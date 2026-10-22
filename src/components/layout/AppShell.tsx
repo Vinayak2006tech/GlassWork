@@ -37,7 +37,7 @@ export const AppShell: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/70 text-slate-900 relative z-10 backdrop-blur-3xs">
+    <div className="min-h-screen flex flex-col glass-mesh-bg text-slate-900">
       {/* Skip to Main Content accessible anchor */}
       <a
         href="#main-content"
@@ -46,8 +46,8 @@ export const AppShell: React.FC = () => {
         Skip to main content
       </a>
 
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 h-16 border-b border-slate-200/80 bg-white/80 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+      {/* Top Header with Frosted Glass */}
+      <header className="sticky top-0 z-30 h-16 border-b border-white/60 bg-white/70 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
         <div className="flex items-center gap-3">
           {/* Mobile hamburger button */}
           <button
@@ -56,7 +56,7 @@ export const AppShell: React.FC = () => {
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-navigation-drawer"
             aria-label="Open navigation menu"
-            className="md:hidden p-2 -ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            className="md:hidden p-2 -ml-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
           >
             <MenuIcon className="w-6 h-6" aria-hidden="true" />
           </button>
@@ -97,17 +97,17 @@ export const AppShell: React.FC = () => {
         <div className="flex items-center gap-3">
           <Menu as="div" className="relative">
             <Menu.Button
-              className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors"
+              className="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-white/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors"
               aria-label="User profile options"
             >
               {user?.avatarUrl ? (
                 <img
                   src={user.avatarUrl}
                   alt=""
-                  className="w-8 h-8 rounded-lg object-cover ring-1 ring-slate-200"
+                  className="w-8 h-8 rounded-lg object-cover ring-1 ring-white/60 shadow-xs"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold text-xs">
+                <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold text-xs shadow-xs">
                   <UserIcon className="w-4 h-4" />
                 </div>
               )}
@@ -129,8 +129,8 @@ export const AppShell: React.FC = () => {
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-xl bg-white p-1.5 shadow-xl ring-1 ring-slate-200 focus:outline-none z-50">
-                <div className="px-3 py-2 border-b border-slate-100 mb-1">
+              <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right rounded-2xl glass-panel-opaque p-1.5 shadow-2xl ring-1 ring-black/5 focus:outline-none z-50">
+                <div className="px-3 py-2 border-b border-slate-100/80 mb-1">
                   <p className="text-xs font-medium text-slate-900">{user?.name}</p>
                   <p className="text-[11px] text-slate-500 truncate">{user?.email}</p>
                 </div>
@@ -139,7 +139,7 @@ export const AppShell: React.FC = () => {
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-lg text-rose-600 transition-colors ${
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium rounded-xl text-rose-600 transition-colors ${
                         active ? 'bg-rose-50 text-rose-700' : ''
                       }`}
                     >
@@ -159,7 +159,7 @@ export const AppShell: React.FC = () => {
         {/* Desktop Sidebar */}
         <aside
           aria-label="Main Navigation"
-          className="hidden md:flex flex-col w-64 p-4 border-r border-slate-200/80 shrink-0"
+          className="hidden md:flex flex-col w-64 p-4 border-r border-white/60 bg-white/30 backdrop-blur-md shrink-0"
         >
           <nav className="space-y-1">
             {navItems.map((item) => (
@@ -170,8 +170,8 @@ export const AppShell: React.FC = () => {
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                     isActive
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100/80'
+                      ? 'bg-indigo-600 text-white shadow-md shadow-indigo-200'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`
                 }
               >

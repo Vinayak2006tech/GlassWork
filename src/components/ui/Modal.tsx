@@ -39,7 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs transition-opacity" />
+          <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -54,7 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
               leaveTo="opacity-0 scale-95 translate-y-2"
             >
               <Dialog.Panel
-                className={`w-full ${maxWidthClasses} transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-2xl transition-all border border-slate-200 relative`}
+                className={`w-full ${maxWidthClasses} transform overflow-hidden rounded-3xl glass-panel-opaque p-6 text-left align-middle shadow-2xl transition-all border border-white/80 relative`}
               >
                 <div className="flex items-start justify-between pb-3 border-b border-slate-100 mb-4">
                   <div>

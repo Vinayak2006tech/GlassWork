@@ -171,7 +171,7 @@ export const ProjectsPage: React.FC = () => {
             <GlassCard
               key={project.id}
               hoverEffect
-              className="flex flex-col justify-between group h-full border-slate-200/90"
+              className="flex flex-col justify-between group h-full"
             >
               <div>
                 <div className="flex items-start justify-between gap-3 mb-2">
@@ -187,7 +187,7 @@ export const ProjectsPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="space-y-4 pt-3 border-t border-slate-100">
+              <div className="space-y-4 pt-3 border-t border-white/60">
                 {/* Progress bar */}
                 <ProgressBar
                   value={stats.completionPercentage}

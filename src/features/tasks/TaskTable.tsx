@@ -39,13 +39,13 @@ export const TaskTable: React.FC<TaskTableProps> = ({
   };
 
   return (
-    <div className="w-full overflow-hidden rounded-xl border border-slate-200/90 bg-white shadow-xs">
+    <div className="w-full overflow-hidden rounded-2xl glass-card shadow-xs">
       {/* Scrollable table container ensuring horizontal body scroll NEVER occurs */}
       <div className="w-full overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[700px]">
           <caption className="sr-only">Project tasks list and management table</caption>
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50/80 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <tr className="border-b border-white/60 bg-white/40 backdrop-blur-md text-[11px] font-semibold uppercase tracking-wider text-slate-500">
               <th scope="col" className="py-3 pl-4 pr-3 sm:pl-6">
                 Title & Description
               </th>
@@ -66,7 +66,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-sm">
+          <tbody className="divide-y divide-white/40 text-sm">
             {tasks.map((task) => {
               const assignee = userMap.get(task.assigneeId);
               const overdue = isOverdue(task.dueDate, task.status);
@@ -74,7 +74,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({
               return (
                 <tr
                   key={task.id}
-                  className="hover:bg-slate-50/60 transition-colors group"
+                  className="hover:bg-white/60 transition-colors group"
                 >
                   {/* Title & Description */}
                   <td className="py-3.5 pl-4 pr-3 sm:pl-6 max-w-xs sm:max-w-sm">
@@ -106,7 +106,7 @@ export const TaskTable: React.FC<TaskTableProps> = ({
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="absolute left-0 mt-1 w-40 origin-top-left rounded-xl bg-white p-1 shadow-lg ring-1 ring-slate-200 focus:outline-none z-20 text-xs">
+                        <Menu.Items className="absolute left-0 mt-1 w-40 origin-top-left rounded-2xl glass-panel-opaque p-1.5 shadow-xl ring-1 ring-black/5 focus:outline-none z-20 text-xs">
                           <div className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                             Move to...
                           </div>
@@ -218,14 +218,14 @@ export const TaskTable: React.FC<TaskTableProps> = ({
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <Menu.Items className="absolute right-0 mt-1 w-36 origin-top-right rounded-xl bg-white p-1 shadow-xl ring-1 ring-slate-200 focus:outline-none z-20 text-xs">
+                        <Menu.Items className="absolute right-0 mt-1 w-36 origin-top-right rounded-2xl glass-panel-opaque p-1.5 shadow-xl ring-1 ring-black/5 focus:outline-none z-20 text-xs">
                           <Menu.Item>
                             {({ active }) => (
                               <button
                                 type="button"
                                 onClick={() => onEditTask(task)}
-                                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-slate-700 ${
-                                  active ? 'bg-slate-100 text-slate-900' : ''
+                                className={`w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl text-slate-700 ${
+                                  active ? 'bg-white/70 text-slate-900' : ''
                                 }`}
                               >
                                 <Edit2 className="w-3.5 h-3.5 text-slate-500" />

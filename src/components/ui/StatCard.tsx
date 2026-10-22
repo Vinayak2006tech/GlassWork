@@ -19,7 +19,7 @@ export const StatCard: React.FC<StatCardProps> = ({
   subtitle,
   badge,
   className = '',
-  iconBgColor = 'bg-indigo-50 text-indigo-600',
+  iconBgColor = 'bg-indigo-50/80 text-indigo-600 border border-indigo-100/60',
 }) => {
   return (
     <GlassCard className={`flex flex-col justify-between ${className}`} hoverEffect>
@@ -27,7 +27,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
           {title}
         </span>
-        <div className={`p-2 rounded-lg ${iconBgColor}`}>{icon}</div>
+        <div className={`p-2.5 rounded-xl backdrop-blur-md shadow-xs ${iconBgColor}`}>{icon}</div>
       </div>
       <div>
         <div className="text-2xl font-bold tracking-tight text-slate-900">{value}</div>
