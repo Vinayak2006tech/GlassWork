@@ -145,10 +145,10 @@ All filter, search, and sort states on the Project Details page (`/projects/:id`
 
 ## 🎨 Modern Visual Layer & Glassmorphism Design System
 
-- **Clean & Lightweight**: All 3D objects, WebGL contexts, and Three.js canvas overhead have been completely removed.
+- **Interactive Ambient Background (`<Iridescence />`)**: Integrated the open-source `<Iridescence />` shader component from **React Bits** as a hardware-accelerated ambient backdrop with pointer reactivity, liquid stir, subtle sheen, and click swirl effects.
 - **Glassmorphism Visual Accents**: Uses sleek, high-contrast 2D CSS and SVG visual cards with frosted glass backgrounds (`backdrop-blur`), subtle borders, soft shadows, and team status metrics.
 - **Pure Semantic UI**: All forms, tables, modals, cards, and navigation are 100% semantic and accessible HTML with zero GPU load or WebGL compatibility risks.
-- **Performance**: Eliminates canvas render loops, reducing initial bundle weight by over 800 KB and ensuring fast page loads on any device.
+- **Graceful Fallbacks & Performance**: WebGL2 canvas safely scales and unmounts, automatically respecting `prefers-reduced-motion` and ensuring zero degradation of interactive form controls and table operations.
 
 ---
 
