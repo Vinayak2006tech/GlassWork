@@ -1,6 +1,8 @@
 # Axionix Team Task Tracker 🚀
 
-A production-quality, responsive **Team Task Tracker** web application engineered for the Axionix Frontend Engineering Internship assignment. Designed with a modern "Floating Glass Dashboard" aesthetic featuring an optional decorative 3D visual layer, accessible semantic UI, simulated asynchronous service layer, and comprehensive behavior-focused testing.
+A production-quality, responsive **Team Task Tracker** web application engineered for the Axionix Frontend Engineering Internship assignment. Designed with a modern "Floating Glass Dashboard" aesthetic featuring an interactive ambient WebGL shader visual layer, accessible semantic UI, simulated asynchronous service layer, and comprehensive behavior-focused testing.
+
+- **Time spent**: ~7 hours (architecture, glassmorphism design system, simulated service layer, Vitest test suites, and WCAG AA accessibility).
 
 ---
 
@@ -13,7 +15,7 @@ A production-quality, responsive **Team Task Tracker** web application engineere
 6. [Why TanStack Query + React Context](#why-tanstack-query--react-context)
 7. [Simulated Service Layer & Error Injection](#simulated-service-layer--error-injection)
 8. [URL-Driven Filters & Navigation](#url-driven-filters--navigation)
-9. [Decorative 3D Visual Layer & Graceful Degradation](#decorative-3d-visual-layer--graceful-degradation)
+9. [Modern Visual Layer & Glassmorphism Design System](#modern-visual-layer--glassmorphism-design-system)
 10. [Accessibility (a11y) & Responsiveness](#accessibility-a11y--responsiveness)
 11. [Testing Suite](#testing-suite)
 12. [Credits & Inspirations](#credits--inspirations)
@@ -41,7 +43,10 @@ cd INTERNSHIP
 # 2. Install dependencies
 npm install
 
-# 3. Start local development server
+# 3. (Optional) Configure environment variables
+cp .env.example .env    # Optional: sensible defaults (500ms delay, 0 failure rate) apply automatically
+
+# 4. Start local development server
 npm run dev
 ```
 
@@ -66,7 +71,7 @@ The app includes pre-seeded demo credentials displayed in a quick-hint box on th
 | Command | Description |
 | :--- | :--- |
 | `npm run dev` | Starts Vite dev server with Hot Module Replacement (HMR) at `localhost:5173` |
-| `npm test` | Runs the full Vitest suite in run mode (18 behaviour-focused tests) |
+| `npm test` | Runs the full Vitest suite in run mode (19 behaviour-focused tests across 7 test suites) |
 | `npm run test:watch` | Runs Vitest in interactive watch mode |
 | `npm run lint` | Lints TypeScript and TSX files with ESLint + `eslint-plugin-jsx-a11y` |
 | `npm run lint:fix` | Automatically fixes mechanical ESLint issues |
@@ -87,9 +92,9 @@ Component ➔ Hook ➔ Service ➔ Storage / Network Simulator
 ```
 src/
 ├── components/
-│   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback
-│   ├── three/          # Scene3D, FloatingShape, Globe, HeroScene, ReducedMotionFallback (ALL 3D)
-│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard
+│   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback, GlobalIridescenceBackground
+│   ├── three/          # HeroScene (2D glass illustration), ReducedMotionFallback
+│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, DitherVeil
 ├── data/
 │   └── seed.ts         # 5 users, 4 projects, 20 tasks, dynamic date anchors
 ├── features/
@@ -100,7 +105,7 @@ src/
 │   └── tasks/          # ProjectDetailsPage, TaskTable, TaskModal, DeleteTaskModal
 ├── hooks/              # useTasks, useProjects, useUsers, useDebounce, useAuth, usePrefersReducedMotion
 ├── services/           # api.ts (delay + failure engine), authService, projectService, taskService, userService
-├── test/               # setup.ts, testUtils.tsx (renderWithProviders & 3D mocks)
+├── test/               # setup.ts, testUtils.tsx (renderWithProviders & visual mocks)
 ├── types/              # models.ts (User, Project, Task, TaskStats, TaskFilters)
 └── utils/              # filterAndSortTasks, taskStats, dates
 ```
@@ -119,7 +124,7 @@ src/
 
 ## 🧪 Simulated Service Layer & Error Injection
 
-All asynchronous operations flow through [api.ts](file:///Users/apple/Desktop/INTERNSHIP/src/services/api.ts) via `simulateNetwork()`:
+All asynchronous operations flow through [api.ts](src/services/api.ts) via `simulateNetwork()`:
 - **Configurable Network Delay**: Controlled by `VITE_API_DELAY_MS` in `.env` (default: `500ms`).
 - **Configurable Failure Rate**: Controlled by `VITE_API_FAILURE_RATE` in `.env` (default: `0`).
 - **Live "Simulate error" Toggle**: A visible checkbox toggle in the application footer allows reviewers to immediately force API failures on camera to verify error states and retry buttons.
@@ -145,10 +150,11 @@ All filter, search, and sort states on the Project Details page (`/projects/:id`
 
 ## 🎨 Modern Visual Layer & Glassmorphism Design System
 
-- **Interactive Ambient Background (`<Iridescence />`)**: Integrated the open-source `<Iridescence />` shader component from **React Bits** as a hardware-accelerated ambient backdrop with pointer reactivity, liquid stir, subtle sheen, and click swirl effects.
-- **Glassmorphism Visual Accents**: Uses sleek, high-contrast 2D CSS and SVG visual cards with frosted glass backgrounds (`backdrop-blur`), subtle borders, soft shadows, and team status metrics.
-- **Pure Semantic UI**: All forms, tables, modals, cards, and navigation are 100% semantic and accessible HTML with zero GPU load or WebGL compatibility risks.
-- **Graceful Fallbacks & Performance**: WebGL2 canvas safely scales and unmounts, automatically respecting `prefers-reduced-motion` and ensuring zero degradation of interactive form controls and table operations.
+- **Interactive Ambient Background (`<Iridescence />`)**: Integrated the open-source `<Iridescence />` WebGL shader component from **React Bits** (powered by `ogl`) as a dynamic ambient backdrop with pointer reactivity, liquid stir, sheen, and click swirl effects.
+- **Behavior with `prefers-reduced-motion`**: When the user's OS preference has reduced motion enabled (`prefers-reduced-motion: reduce`), the shader loop automatically freezes animation progression, pointer tracking, and swirl dynamics to prevent motion sickness and respect accessibility guidelines.
+- **Behavior without WebGL**: If WebGL/WebGL2 is unavailable, unsupported by the GPU, or disabled in the browser (or in headless test environments like Vitest/JSDOM), `<Iridescence />` safely catches the absence of a WebGL context and aborts initialization gracefully without throwing errors. The application smoothly falls back to CSS-only background gradients (`.glass-mesh-bg`) ensuring 100% functionality, readability, and contrast for all interactive controls.
+- **Glassmorphism Visual Accents**: Uses high-contrast 2D CSS visual cards (`<GlassCard />`) with frosted glass backgrounds (`backdrop-blur`), subtle borders, soft shadows, and team status metrics.
+- **Pure Semantic UI**: All forms, tables, modals, cards, and navigation are 100% semantic and accessible HTML controls layered on top of the ambient canvas.
 
 ---
 
@@ -165,23 +171,36 @@ All filter, search, and sort states on the Project Details page (`/projects/:id`
 
 ## 🧪 Testing Suite
 
-The testing suite contains **18 automated tests across 6 suites**, achieving 100% pass rate:
-
-1. **Sign-in Validation**: Verifies empty/invalid email and password field errors.
-2. **Sign-in Redirection**: Successful sign-in redirects to the dashboard.
-3. **Protected Routes**: Unauthenticated visits to `/` redirect to `/login`.
-4. **Project Search**: Filters the projects grid by search term.
-5. **Project Search Empty State**: Displays empty state with "Clear search" button when no results match.
-6. **Task Creation**: Creates a new task via modal and verifies it appears in the table.
-7. **Loading & Populated States**: Validates skeleton transitions to live dashboard metrics.
-8. **Error Resilience & Retry**: Simulated network failure displays alert with working Retry button.
-9. **Modal Accessibility**: Escape key dismisses modal and restores focus to trigger button.
-10. **Unit Tests**: Complete test coverage for `filterAndSortTasks()` and `calculateTaskStats()`.
-
-Run the test suite:
+Execute the test suite with the exact test command:
 ```bash
 npm test
 ```
+
+The test suite runs **19 automated tests across 7 test suites** using Vitest and React Testing Library, achieving a 100% pass rate:
+
+1. **`LoginForm.test.tsx` (3 tests)**:
+   - Validates email and password required field validation errors.
+   - Rejects invalid email formats with informative error messaging.
+   - Successfully signs in with valid credentials and redirects to dashboard.
+2. **`filterAndSortTasks.test.ts` (7 tests)**:
+   - Pure function unit tests verifying filtering by search query (title and description).
+   - Verifies status filtering (`TODO`, `IN_PROGRESS`, `DONE`).
+   - Verifies priority filtering (`LOW`, `MEDIUM`, `HIGH`, `URGENT`).
+   - Verifies assignee filtering and sorting by dueDate, priority, and title (ascending and descending).
+3. **`TaskFlow.test.tsx` (2 tests)**:
+   - Creates a new task through the modal and verifies it appears in the table.
+   - Closes modal on `Escape` key press and restores focus to trigger button.
+4. **`Dashboard.test.tsx` (2 tests)**:
+   - Renders loading skeletons and transitions to live metric values.
+   - Displays project and task quick-action navigation and hero strip.
+5. **`ProjectsPage.test.tsx` (2 tests)**:
+   - Filters the projects grid by search keyword.
+   - Displays empty state with "Clear search" button when no results match.
+6. **`taskStats.test.ts` (2 tests)**:
+   - Accurately computes total, completed, in-progress, overdue, and due soon counts.
+   - Handles empty task lists without errors.
+7. **`Iridescence.test.tsx` (1 test)**:
+   - Renders ambient shader component container safely in headless JSDOM without WebGL context.
 
 ---
 
@@ -191,15 +210,21 @@ npm test
 - **Tailwind CSS**: Utility-first CSS framework.
 - **Headless UI**: Unstyled, accessible UI primitives (Dialog, Menu).
 - **Lucide Icons**: Consistent, semantic icon set.
-- **Three.js / @react-three/fiber / @react-three/drei**: Declarative 3D canvas and procedural shapes (procedural Float, MeshDistortMaterial, torus knot, icosahedron).
+- **React Bits (`Iridescence`)**: Ambient fluid WebGL shader background component.
+- **ogl**: Minimal, performant WebGL library powering the Iridescence shader.
+- **motion**: Modern animation library for smooth UI transitions and dialog reveals.
 - **date-fns**: Modular date math and formatting.
-- **Unsplash**: Royalty-free placeholder avatars for team members.
-- **Design Inspiration**: Linear and Vercel minimalist SaaS aesthetic with glassmorphism overlays.
+- **Unsplash**: Royalty-free placeholder portrait avatars for seed team members in `src/data/seed.ts`.
+- **Design Inspiration**: Linear and Vercel minimalist SaaS aesthetic with frosted glassmorphism overlays.
 
 ---
 
 ## 📌 Assumptions & Known Limitations
 
-1. **Mock Backend**: Operates over simulated asynchronous `localStorage`. Clearing browser data resets changes; the footer includes a "Reset Demo Data" button.
-2. **Simulated Failure Rate**: Default failure rate is set to `0` in `.env` to prevent test flakiness, but can be raised or tested live via the footer toggle.
-3. **No Drag-and-Drop**: Status changes use an accessible, keyboard-navigable Headless UI Menu ("Move to..."), per internship task instructions.
+1. **Mock Backend & Local Storage**: Operates entirely over simulated asynchronous `localStorage` with configurable network latency and error rates. The footer includes a "Reset Demo Data" button to restore initial state at any time.
+2. **No Remote Deployment**: This repository is designed and configured for local reviewer evaluation and grading via `npm run dev` and `npm test`; no remote cloud hosting (e.g. Vercel/Netlify) is currently deployed.
+3. **No Optimistic Updates**: Task and project mutations await simulated network resolution before invalidating queries and refreshing the UI. This intentional choice guarantees that reviewers observe authentic loading skeletons, spinner feedback, and error recovery states.
+4. **No Theme Switcher (Dark Mode Only)**: The application features an intentional dark-mode glassmorphism visual system; a light-mode toggle is not implemented.
+5. **No Drag-and-Drop Reordering**: Task status changes utilize an accessible, keyboard-navigable Headless UI Menu ("Move to..."), ensuring full WCAG compliance without complex pointer-only drag interactions.
+6. **No Real-Time WebSocket Synchronization**: Multi-tab synchronization relies on browser storage events and manual query refetches rather than a dedicated WebSocket server.
+
