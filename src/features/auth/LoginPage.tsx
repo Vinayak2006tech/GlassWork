@@ -5,7 +5,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 
 export const LoginPage: React.FC = () => {
   return (
-    <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50 relative overflow-hidden">
+    <main className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50/70 relative z-10 overflow-hidden">
       {/* Subtle ambient background glow */}
       <div
         aria-hidden="true"

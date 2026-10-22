@@ -143,12 +143,12 @@ All filter, search, and sort states on the Project Details page (`/projects/:id`
 
 ---
 
-## 🎨 Modern Visual Layer & Glassmorphism Design System
+## 🎨 Modern Visual Layer & React Bits `<DitherVeil />` Background
 
-- **Clean & Lightweight**: All 3D objects, WebGL contexts, and Three.js canvas overhead have been completely removed.
-- **Glassmorphism Visual Accents**: Uses sleek, high-contrast 2D CSS and SVG visual cards with frosted glass backgrounds (`backdrop-blur`), subtle borders, soft shadows, and team status metrics.
-- **Pure Semantic UI**: All forms, tables, modals, cards, and navigation are 100% semantic and accessible HTML with zero GPU load or WebGL compatibility risks.
-- **Performance**: Eliminates canvas render loops, reducing initial bundle weight by over 800 KB and ensuring fast page loads on any device.
+- **Interactive `<DitherVeil />` Background**: Powered by `ogl` (minimal WebGL library from React Bits), rendering a subtle, dynamic dithered background layer across every page (`/login`, `/`, `/projects`, `/projects/:id`, `/404`).
+- **Interactive Features**: Mouse wander animation, interactive ripple shockwaves (`clickBurst`), Floyd-Steinberg dithering pattern, tailored indigo/slate color grading, and auto-fallback when running in headless/JSDOM environments.
+- **Glassmorphism Layering**: Page content sits on a translucent frosted glass surface (`backdrop-blur-sm bg-slate-50/70 relative z-10`), allowing the organic veil texture to shine through while ensuring full WCAG AA contrast.
+- **Pure Semantic UI**: All forms, tables, modals, cards, and navigation remain 100% semantic, keyboard-accessible, and unobstructed.
 
 ---
 

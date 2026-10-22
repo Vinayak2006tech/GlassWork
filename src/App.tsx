@@ -12,6 +12,7 @@ import { ProjectsPage } from './features/projects/ProjectsPage';
 import { ProjectDetailsPage } from './features/tasks/ProjectDetailsPage';
 import { NotFoundPage } from './features/notfound/NotFoundPage';
 import { ErrorBoundaryFallback } from './components/layout/ErrorBoundaryFallback';
+import { GlobalDitherBackground } from './components/layout/GlobalDitherBackground';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,9 @@ export const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <BrowserRouter>
+            {/* Ambient interactive DitherVeil canvas across all pages */}
+            <GlobalDitherBackground />
+
             <Toaster
               position="top-right"
               toastOptions={{
