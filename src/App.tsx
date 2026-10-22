@@ -58,27 +58,29 @@ export const App: React.FC = () => {
                 },
               }}
             />
-            <Routes>
-              {/* Public Authentication Route */}
-              <Route path="/login" element={<LoginPage />} />
+            <div className="relative z-10 min-h-screen flex flex-col">
+              <Routes>
+                {/* Public Authentication Route */}
+                <Route path="/login" element={<LoginPage />} />
 
-              {/* Protected Workspace Routes inside App Shell */}
-              <Route
-                element={
-                  <ProtectedRoute>
-                    <AppShell />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<DashboardPage />} />
-                <Route path="projects" element={<ProjectsPage />} />
-                <Route path="projects/:id" element={<ProjectDetailsPage />} />
-              </Route>
+                {/* Protected Workspace Routes inside App Shell */}
+                <Route
+                  element={
+                    <ProtectedRoute>
+                      <AppShell />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route index element={<DashboardPage />} />
+                  <Route path="projects" element={<ProjectsPage />} />
+                  <Route path="projects/:id" element={<ProjectDetailsPage />} />
+                </Route>
 
-              {/* Friendly 404 Route */}
-              <Route path="/404" element={<NotFoundPage />} />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
+                {/* Friendly 404 Route */}
+                <Route path="/404" element={<NotFoundPage />} />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </div>
           </BrowserRouter>
         </AuthProvider>
       </QueryClientProvider>

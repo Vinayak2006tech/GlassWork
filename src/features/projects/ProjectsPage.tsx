@@ -18,7 +18,9 @@ import {
   CheckSquare,
   ArrowRight,
   FolderPlus,
+  FolderKanban,
 } from 'lucide-react';
+import { Iridescence } from '../../components/ui/Iridescence';
 
 export const ProjectsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,6 +102,35 @@ export const ProjectsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Decorative Iridescence Hero Strip */}
+      <div className="w-full h-20 rounded-2xl overflow-hidden shadow-sm border border-white/20 relative flex items-center justify-between px-6 bg-slate-950">
+        <div className="absolute inset-0 z-0 opacity-80">
+          <Iridescence
+            color="#8099cc"
+            speed={1.6}
+            scale={1.3}
+            detail={6}
+            brightness={1.3}
+            opacity={0.8}
+          />
+        </div>
+        <div className="absolute inset-0 bg-indigo-950/40 backdrop-blur-xs pointer-events-none" />
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-indigo-300 border border-white/20 shadow-xs">
+            <FolderKanban className="w-5 h-5 text-indigo-300" />
+          </div>
+          <div>
+            <h2 className="text-white text-sm font-semibold">Team Project Hub</h2>
+            <p className="text-indigo-200 text-xs">Organize workflows, sprint allocations, and milestone deliverables</p>
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2 relative z-10 text-xs text-indigo-200/90 font-medium">
+          <span className="px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
+            {projectList.length} Active {projectList.length === 1 ? 'Project' : 'Projects'}
+          </span>
+        </div>
+      </div>
+
       {/* Header with Title and Create Button */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layers, Sparkles, CheckCircle2, TrendingUp, Users } from 'lucide-react';
+import { Iridescence } from '../ui/Iridescence';
 
 interface ReducedMotionFallbackProps {
   variant?: 'login' | 'dashboard' | 'notfound';
@@ -14,9 +15,19 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
     return (
       <div
         aria-hidden="true"
-        className={`w-full h-24 rounded-2xl bg-gradient-to-r from-indigo-950 via-indigo-900 to-violet-950 p-6 flex items-center justify-between overflow-hidden relative shadow-md border border-indigo-800/30 ${className}`}
+        className={`w-full h-24 rounded-2xl bg-slate-950 p-6 flex items-center justify-between overflow-hidden relative shadow-md border border-white/20 ${className}`}
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_70%)] pointer-events-none" />
+        <div className="absolute inset-0 z-0 opacity-80">
+          <Iridescence
+            color="#8099cc"
+            speed={1.8}
+            scale={1.2}
+            detail={6}
+            brightness={1.3}
+            opacity={0.8}
+          />
+        </div>
+        <div className="absolute inset-0 bg-indigo-950/40 backdrop-blur-xs pointer-events-none" />
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center text-indigo-300 border border-white/20 shadow-xs">
             <Sparkles className="w-5 h-5 text-indigo-300" />
@@ -27,7 +38,7 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
           </div>
         </div>
         <div className="hidden sm:flex items-center gap-3 relative z-10">
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-medium backdrop-blur-md">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
             <span>Systems Optimal</span>
           </div>
@@ -40,9 +51,12 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
     return (
       <div
         aria-hidden="true"
-        className={`w-40 h-40 rounded-full bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-purple-500/10 flex items-center justify-center border border-indigo-200/50 shadow-inner ${className}`}
+        className={`w-40 h-40 rounded-full flex items-center justify-center border border-white/30 shadow-inner overflow-hidden relative ${className}`}
       >
-        <div className="w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center text-indigo-600 font-extrabold text-3xl border border-indigo-100">
+        <div className="absolute inset-0 z-0">
+          <Iridescence color="#8099cc" speed={2} scale={0.8} opacity={0.85} />
+        </div>
+        <div className="w-24 h-24 rounded-full glass-panel-opaque shadow-xl flex items-center justify-center text-indigo-600 font-extrabold text-3xl border border-white/80 relative z-10">
           404
         </div>
       </div>
@@ -53,10 +67,19 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
   return (
     <div
       aria-hidden="true"
-      className={`w-full h-full min-h-[460px] rounded-3xl bg-gradient-to-br from-indigo-950 via-indigo-900 to-violet-950 p-8 flex flex-col justify-between overflow-hidden relative shadow-2xl border border-indigo-800/40 ${className}`}
+      className={`w-full h-full min-h-[460px] rounded-3xl bg-slate-950 p-8 flex flex-col justify-between overflow-hidden relative shadow-2xl border border-white/20 ${className}`}
     >
-      <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-80 h-80 rounded-full bg-violet-500/20 blur-3xl pointer-events-none" />
+      <div className="absolute inset-0 z-0 opacity-85">
+        <Iridescence
+          color="#8099cc"
+          speed={2.2}
+          scale={1.0}
+          detail={8}
+          brightness={1.4}
+          opacity={0.85}
+        />
+      </div>
+      <div className="absolute inset-0 bg-indigo-950/35 backdrop-blur-xs pointer-events-none" />
 
       {/* Decorative top branding */}
       <div className="relative z-10 flex items-center justify-between">
