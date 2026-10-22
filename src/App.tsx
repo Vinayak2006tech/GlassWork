@@ -12,6 +12,7 @@ import { ProjectsPage } from './features/projects/ProjectsPage';
 import { ProjectDetailsPage } from './features/tasks/ProjectDetailsPage';
 import { NotFoundPage } from './features/notfound/NotFoundPage';
 import { ErrorBoundaryFallback } from './components/layout/ErrorBoundaryFallback';
+import { GlobalIridescenceBackground } from './components/layout/GlobalIridescenceBackground';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,9 @@ export const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <BrowserRouter>
+            {/* Ambient interactive Iridescence background */}
+            <GlobalIridescenceBackground />
+
             <Toaster
               position="top-right"
               toastOptions={{
