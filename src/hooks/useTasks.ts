@@ -3,6 +3,8 @@ import { taskService, CreateTaskDTO, UpdateTaskDTO } from '../services/taskServi
 import { PROJECT_KEYS } from './useProjects';
 import toast from 'react-hot-toast';
 
+export { useUsers, useUser } from './useUsers';
+
 export const TASK_KEYS = {
   all: ['tasks'] as const,
   byProject: (projectId?: string) => ['tasks', { projectId }] as const,

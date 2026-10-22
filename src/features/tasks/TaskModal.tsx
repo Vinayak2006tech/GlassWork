@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -7,8 +7,7 @@ import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Task, TaskPriority, TaskStatus } from '../../types/models';
-import { useCreateTask, useUpdateTask } from '../../hooks/useTasks';
-import { useUsers } from '../../hooks/useUsers';
+import { useCreateTask, useUpdateTask, useUsers } from '../../hooks/useTasks';
 
 const taskSchema = z.object({
   title: z
@@ -16,8 +15,8 @@ const taskSchema = z.object({
     .min(1, 'Task title is required')
     .min(3, 'Task title must be at least 3 characters'),
   description: z.string().optional().default(''),
-  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE'] as const),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH'] as const),
+  status: z.enum(['TODO', 'IN_PROGRESS', 'DONE']),
+  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']),
   assigneeId: z.string().min(1, 'Please select an assignee'),
   dueDate: z
     .string()
@@ -34,6 +33,8 @@ interface TaskModalProps {
   taskToEdit?: Task | null;
 }
 
+const getDefaultDueDate = (): string => new Date().toISOString().split('T')[0];
+
 export const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
   onClose,
@@ -45,16 +46,14 @@ export const TaskModal: React.FC<TaskModalProps> = ({
   const updateTaskMutation = useUpdateTask();
   const { data: users } = useUsers();
 
-  const userList = React.useMemo(() => users || [], [users]);
-  const assigneeOptions = React.useMemo(
+  const userList = useMemo(() => users || [], [users]);
+  const assigneeOptions = useMemo(
     () => [
       { value: '', label: 'Select team member...' },
       ...userList.map((u) => ({ value: u.id, label: `${u.name} (${u.role || 'Member'})` })),
     ],
     [userList]
   );
-
-  const defaultDueDate = new Date().toISOString().split('T')[0];
 
   const {
     register,
@@ -69,20 +68,22 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       status: 'TODO',
       priority: 'MEDIUM',
       assigneeId: '',
-      dueDate: defaultDueDate,
+      dueDate: getDefaultDueDate(),
     },
   });
 
-  // Populate form with task data when editing
+  // Populate form with task data when modal opens or editing task changes
   useEffect(() => {
+    if (!isOpen) return;
+
     if (taskToEdit) {
       reset({
         title: taskToEdit.title,
-        description: taskToEdit.description,
+        description: taskToEdit.description || '',
         status: taskToEdit.status,
         priority: taskToEdit.priority,
         assigneeId: taskToEdit.assigneeId,
-        dueDate: taskToEdit.dueDate,
+        dueDate: taskToEdit.dueDate ? taskToEdit.dueDate.split('T')[0] : getDefaultDueDate(),
       });
     } else {
       reset({
@@ -91,10 +92,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         status: 'TODO',
         priority: 'MEDIUM',
         assigneeId: userList[0]?.id || '',
-        dueDate: defaultDueDate,
+        dueDate: getDefaultDueDate(),
       });
     }
-  }, [taskToEdit, reset, isOpen, userList, defaultDueDate]);
+  }, [isOpen, taskToEdit, reset, userList]);
 
   const onSubmit = async (data: TaskFormData) => {
     try {
@@ -102,8 +103,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
         await updateTaskMutation.mutateAsync({
           id: taskToEdit.id,
           updates: {
-            title: data.title,
-            description: data.description,
+            title: data.title.trim(),
+            description: (data.description || '').trim(),
             status: data.status as TaskStatus,
             priority: data.priority as TaskPriority,
             assigneeId: data.assigneeId,
@@ -113,8 +114,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       } else {
         await createTaskMutation.mutateAsync({
           projectId,
-          title: data.title,
-          description: data.description,
+          title: data.title.trim(),
+          description: (data.description || '').trim(),
           status: data.status as TaskStatus,
           priority: data.priority as TaskPriority,
           assigneeId: data.assigneeId,
@@ -123,7 +124,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       }
       onClose();
     } catch {
-      // Handled in mutation toast
+      // Error notifications handled by mutation toast
     }
   };
 
@@ -161,9 +162,20 @@ export const TaskModal: React.FC<TaskModalProps> = ({
             id="task-description-field"
             rows={2}
             placeholder="Details, acceptance criteria, or relevant links..."
-            className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+            aria-invalid={Boolean(errors.description)}
+            aria-describedby={errors.description ? 'task-desc-error' : undefined}
+            className={`w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${
+              errors.description
+                ? 'border-rose-400 focus-visible:ring-rose-500'
+                : 'border-slate-300 hover:border-slate-400'
+            }`}
             {...register('description')}
           />
+          {errors.description && (
+            <p id="task-desc-error" role="alert" className="mt-1 text-xs text-rose-600 font-medium">
+              {errors.description.message}
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
