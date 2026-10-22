@@ -1,17 +1,1490 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Axionix Team Task Tracker - Production-quality team project and task management dashboard" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f46e5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 2 7 12 12 22 7 12 2'/><polyline points='2 17 12 22 22 17'/><polyline points='2 12 12 17 22 12'/></svg>" />
-    <title>Axionix Team Task Tracker</title>
-  </head>
-  <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen selection:bg-indigo-500 selection:text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Novaryn — Acceleration Through Vision™</title>
+
+  <!-- Pre-paint motion class: hide elements before first paint unless prefers-reduced-motion is on -->
+  <script>
+    (function () {
+      try {
+        var m = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (!m || !m.matches) {
+          document.documentElement.classList.add('motion-pending');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    @font-face {
+      font-family: "Novaryn Sans";
+      src: url("assets/novaryn-sans.ttf") format("truetype");
+      font-weight: 300 900;
+      font-display: block;
+    }
+
+    :root {
+      --u: min(100vw / 1280, 100vh / 800);
+      --gx: clamp(20px, 2.6vw, 28px);
+      --gc: clamp(40px, 6.5vw, 72px);
+      --color-bg: #f7f8f3;
+      --color-ink: #25251d;
+      --color-accent: #7b3cff;
+      --color-wash: rgba(247, 248, 243, 0.90);
+      --color-rule: #1c1c1c;
+      --color-news-bg: rgba(189, 191, 177, 0.985);
+      --color-pill-text: #edefe8;
+      --color-news-cta-text: #d2d3c7;
+    }
+
+    @supports (height: 100svh) {
+      :root {
+        --u: min(100vw / 1280, 100svh / 800);
+      }
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background-color: var(--color-bg);
+      color: var(--color-ink);
+      font-family: "Novaryn Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: geometricPrecision;
+    }
+
+    html.menu-open {
+      overflow: hidden;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-ink);
+      min-height: 100vh;
+      min-height: 100svh;
+      height: 100vh;
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Focus visible */
+    :focus-visible {
+      outline: 2px solid var(--color-ink);
+      outline-offset: 3px;
+    }
+
+    #site-menu :focus-visible {
+      outline-color: var(--color-accent);
+    }
+
+    /* -------------------------------------------------------------
+       TOP EDITORIAL BAND
+       ------------------------------------------------------------- */
+    .top {
+      position: relative;
+      height: calc(345 * var(--u));
+      flex-shrink: 0;
+      width: 100%;
+    }
+
+    /* Vertical hairline divider */
+    .divider {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(4 * var(--u));
+      height: 100%;
+      background: linear-gradient(to right, #f5f6f1 0%, #f5f6f1 25%, #f3f4ef 25%, #f3f4ef 75%, #f5f6f1 75%, #f5f6f1 100%);
+      transform-origin: top center;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Logo */
+    .logo {
+      position: absolute;
+      top: calc(21 * var(--u));
+      left: calc(20 * var(--u));
+      z-index: 90;
+      display: inline-flex;
+      align-items: center;
+      gap: calc(10 * var(--u));
+      text-decoration: none;
+      color: var(--color-ink);
+      cursor: pointer;
+    }
+
+    .logo-mark {
+      width: calc(39 * var(--u));
+      height: calc(26 * var(--u));
+      display: block;
+      flex-shrink: 0;
+    }
+
+    .logo-name {
+      font-size: calc(34.5 * var(--u));
+      font-weight: 350;
+      line-height: 1;
+      letter-spacing: -0.003em;
+      color: var(--color-ink);
+      display: inline-flex;
+      align-items: baseline;
+      gap: calc(3 * var(--u));
+    }
+
+    .logo-star {
+      width: calc(6.4 * var(--u));
+      height: calc(6.4 * var(--u));
+      display: inline-block;
+      vertical-align: super;
+      position: relative;
+      top: calc(-12 * var(--u));
+    }
+
+    /* Menu Button */
+    .menu-btn {
+      position: absolute;
+      top: calc(20 * var(--u));
+      right: calc(20 * var(--u));
+      z-index: 90;
+      height: calc(35 * var(--u));
+      display: inline-flex;
+      align-items: center;
+      gap: calc(16.5 * var(--u));
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: var(--color-ink);
+      cursor: pointer;
+    }
+
+    .menu-btn::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+    }
+
+    .menu-label-stack {
+      position: relative;
+      height: calc(35 * var(--u));
+      line-height: calc(35 * var(--u));
+      overflow: hidden;
+      display: inline-block;
+      font-size: max(12px, calc(16.5 * var(--u)));
+      font-weight: 350;
+      letter-spacing: -0.02em;
+    }
+
+    .menu-label-item {
+      display: block;
+      transition: transform 800ms cubic-bezier(.65,0,.2,1);
+    }
+
+    .menu-label-close {
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
+
+    html.menu-open .menu-label-menu {
+      transform: translateY(-100%);
+    }
+
+    html.menu-open .menu-label-close {
+      transform: translateY(-100%);
+    }
+
+    .menu-icon-wrap {
+      position: relative;
+      width: calc(36 * var(--u));
+      height: calc(36 * var(--u));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .menu-glyph-dots {
+      width: calc(36 * var(--u));
+      height: calc(36 * var(--u));
+      display: block;
+      transition: opacity 150ms ease-out;
+    }
+
+    html.menu-open .menu-glyph-dots {
+      opacity: 0;
+    }
+
+    .menu-glyph-x {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: rotate(-90deg) scale(0.3);
+      transition: transform 900ms cubic-bezier(.16,1,.3,1) 450ms, opacity 200ms ease 450ms;
+      pointer-events: none;
+    }
+
+    .menu-glyph-x::before,
+    .menu-glyph-x::after {
+      content: "";
+      position: absolute;
+      width: calc(22 * var(--u));
+      height: 2px;
+      background-color: var(--color-ink);
+    }
+
+    .menu-glyph-x::before {
+      transform: rotate(45deg);
+    }
+
+    .menu-glyph-x::after {
+      transform: rotate(-45deg);
+    }
+
+    html.menu-open .menu-glyph-x {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+
+    /* Pill "See Further" */
+    .pill-cta {
+      position: absolute;
+      top: calc(144.5 * var(--u));
+      right: calc(20 * var(--u));
+      height: calc(41 * var(--u));
+      padding: calc(4 * var(--u)) calc(19.5 * var(--u)) 0 calc(20.8 * var(--u));
+      background-color: var(--color-ink);
+      color: var(--color-pill-text);
+      border-radius: 9999px;
+      font-weight: 350;
+      font-size: max(12px, calc(16.5 * var(--u)));
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      white-space: nowrap;
+    }
+
+    .pill-cta::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+    }
+
+    /* Headline */
+    .headline {
+      position: absolute;
+      top: calc(207.6 * var(--u));
+      left: calc(20 * var(--u));
+      font-size: calc(62.14 * var(--u));
+      font-weight: 450;
+      letter-spacing: -0.015em;
+      line-height: calc(60 * var(--u));
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .headline-line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .headline-line-inner {
+      display: inline-block;
+    }
+
+    .tm-mark {
+      font-size: 0.83em;
+      position: relative;
+      top: calc(-6.3 * var(--u));
+      margin-left: calc(2.1 * var(--u));
+      font-weight: 400;
+    }
+
+    /* Lead paragraph */
+    .lead {
+      position: absolute;
+      top: calc(228 * var(--u));
+      right: calc(20 * var(--u));
+      width: calc(520 * var(--u));
+      padding-left: calc(21 * var(--u));
+      font-size: max(13px, calc(20.5 * var(--u)));
+      font-weight: 400;
+      letter-spacing: 0.004em;
+      line-height: 1.3171;
+      border-left: max(1.5px, calc(2.4 * var(--u))) solid var(--color-rule);
+      z-index: 10;
+    }
+
+    .lead-line {
+      display: block;
+      white-space: nowrap;
+    }
+
+    /* -------------------------------------------------------------
+       VIDEO STAGE
+       ------------------------------------------------------------- */
+    main.media {
+      flex: 1;
+      min-height: 0;
+      margin: 0 calc(20 * var(--u));
+      border-radius: calc(5 * var(--u)) calc(5 * var(--u)) 0 0;
+      overflow: hidden;
+      isolation: isolate;
+      position: relative;
+      background: radial-gradient(120% 90% at 52% 45%, #334a5f 0%, #142333 48%, #05090f 100%);
+    }
+
+    #hero {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 45%;
+      border: 0;
+      outline: 0;
+      display: block;
+    }
+
+    /* News bar */
+    .news-bar {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(30 * var(--u));
+      width: calc(800 * var(--u));
+      min-height: calc(56 * var(--u));
+      border-radius: calc(2 * var(--u));
+      padding: calc(8 * var(--u)) calc(8 * var(--u)) calc(8 * var(--u)) calc(20 * var(--u));
+      background: var(--color-news-bg);
+      backdrop-filter: blur(24px) saturate(1.1);
+      -webkit-backdrop-filter: blur(24px) saturate(1.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: calc(16 * var(--u));
+      z-index: 10;
+    }
+
+    .news-copy {
+      font-weight: 350;
+      font-size: max(12px, calc(17.5 * var(--u)));
+      letter-spacing: -0.02em;
+      color: var(--color-ink);
+      line-height: 1.25;
+    }
+
+    .news-cta {
+      width: calc(118 * var(--u));
+      height: calc(40 * var(--u));
+      background-color: var(--color-ink);
+      color: var(--color-news-cta-text);
+      border-radius: 9999px;
+      font-size: max(12px, calc(16.75 * var(--u)));
+      font-weight: 350;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .news-cta::after {
+      content: "";
+      position: absolute;
+      inset: -6px;
+    }
+
+    /* -------------------------------------------------------------
+       ENTRANCE PENDING STYLES (only active while .motion-pending)
+       ------------------------------------------------------------- */
+    html.motion-pending .divider {
+      transform: scaleY(0);
+    }
+    html.motion-pending .logo {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    html.motion-pending .menu-btn {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    html.motion-pending .headline-line-inner {
+      transform: translateY(0.72em);
+      clip-path: inset(0 0 100% 0);
+      opacity: 0;
+    }
+    html.motion-pending .lead {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    html.motion-pending .pill-cta {
+      opacity: 0;
+      transform: translateY(10px) scale(0.985);
+    }
+    html.motion-pending .news-bar {
+      opacity: 0;
+      transform: translate(-50%, 10px) scale(0.96, 1);
+    }
+
+    /* -------------------------------------------------------------
+       ORBIT MENU OVERLAY
+       ------------------------------------------------------------- */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    html.menu-open .menu-overlay {
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .menu-wash {
+      position: absolute;
+      inset: 0;
+      background: var(--color-wash);
+      backdrop-filter: blur(16px) saturate(0.9);
+      -webkit-backdrop-filter: blur(16px) saturate(0.9);
+      clip-path: circle(0px at calc(100% - calc(38 * var(--u))) calc(37 * var(--u)));
+      transition: clip-path 1.2s cubic-bezier(.62,0,.18,1);
+    }
+
+    html.menu-open .menu-wash {
+      clip-path: circle(150vmax at calc(100% - calc(38 * var(--u))) calc(37 * var(--u)));
+    }
+
+    html:not(.menu-open) .menu-wash {
+      transition: clip-path 1s cubic-bezier(.7,0,.25,1) 250ms;
+      clip-path: circle(0px at calc(100% - calc(38 * var(--u))) calc(37 * var(--u)));
+    }
+
+    .menu-stage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: auto;
+    }
+
+    /* Preview circle in the center of the orbit */
+    .menu-preview {
+      position: absolute;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e9eae3;
+      transform: translate(-50%, -50%);
+      clip-path: circle(0%);
+      transition: clip-path 0.8s cubic-bezier(.16,1,.3,1) 1.05s;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    html.menu-open .menu-preview {
+      clip-path: circle(50%);
+    }
+
+    .preview-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 350ms cubic-bezier(.16,1,.3,1);
+    }
+
+    .preview-img.active {
+      opacity: 1;
+    }
+
+    /* SVG spokes & dots */
+    .menu-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .orbit-spoke-outer {
+      stroke: var(--color-ink);
+      stroke-opacity: 0.5;
+      stroke-width: 1px;
+      transition: stroke 200ms, stroke-opacity 200ms;
+    }
+
+    .orbit-spoke-inner {
+      stroke: var(--color-accent);
+      stroke-width: 1.5px;
+      stroke-linecap: round;
+      transition: stroke 200ms, x2 250ms ease-out, y2 250ms ease-out;
+    }
+
+    .orbit-dot {
+      transition: transform 200ms ease, fill 200ms;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .orbit-dot.center-dot {
+      fill: var(--color-ink);
+      transition: r 400ms ease;
+    }
+
+    html.menu-settled .orbit-dot.center-dot {
+      r: 0;
+    }
+
+    /* Destinations list */
+    .destinations-nav {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .dest-item {
+      position: absolute;
+      text-decoration: none;
+      color: var(--color-ink);
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      white-space: nowrap;
+      transition: opacity 250ms, color 200ms;
+    }
+
+    .dest-num {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      opacity: 0.85;
+    }
+
+    .dest-title {
+      font-size: clamp(22px, 2.5vw, 40px);
+      font-weight: 350;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+
+    /* Dimming state when a destination is hovered or focused */
+    .menu-stage.has-hover .dest-item:not(.is-hovered) {
+      opacity: 0.38;
+    }
+
+    .menu-stage.has-hover .orbit-spoke-outer:not(.is-hovered) {
+      stroke-opacity: 0.15;
+    }
+
+    .menu-stage.has-hover .orbit-spoke-inner:not(.is-hovered) {
+      opacity: 0.25;
+    }
+
+    .menu-stage.has-hover .orbit-dot:not(.is-hovered):not(.center-dot) {
+      opacity: 0.38;
+    }
+
+    .dest-item.is-hovered {
+      color: var(--color-accent) !important;
+    }
+
+    .dest-item.is-hovered .dest-num,
+    .dest-item.is-hovered .dest-title {
+      color: var(--color-accent) !important;
+    }
+
+    .menu-stage.has-hover .orbit-spoke-outer:not(.is-hovered) {
+      stroke-opacity: 0.15;
+    }
+
+    .menu-stage.has-hover .orbit-dot:not(.is-hovered):not(.center-dot) {
+      opacity: 0.38;
+    }
+
+    .dest-item.is-hovered {
+      color: var(--color-accent) !important;
+    }
+
+    .dest-item.is-hovered .dest-num,
+    .dest-item.is-hovered .dest-title {
+      color: var(--color-accent) !important;
+    }
+
+    /* Caption at lower left */
+    .menu-caption {
+      position: absolute;
+      bottom: calc(30 * var(--u));
+      left: calc(20 * var(--u));
+      z-index: 5;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--color-ink);
+      opacity: 0;
+      transition: opacity 400ms ease 1.2s;
+      pointer-events: none;
+    }
+
+    html.menu-open .menu-caption {
+      opacity: 1;
+    }
+
+    .caption-index {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 2px;
+      opacity: 0.8;
+    }
+
+    .caption-note {
+      font-size: 12px;
+      font-weight: 350;
+      display: block;
+    }
+
+    /* -------------------------------------------------------------
+       RESPONSIVE RULES (Tablet: max-width 959.98px or height <= 599.98px)
+       ------------------------------------------------------------- */
+    @media (max-width: 959.98px), (max-height: 599.98px), (orientation: portrait) {
+      :root {
+        --u: clamp(0.85px, 100vw / 1280, 1px);
+      }
+
+      body {
+        overflow: visible;
+        height: auto;
+        min-height: 100dvh;
+      }
+
+      html.menu-open .top {
+        isolation: auto;
+      }
+
+      .top {
+        height: auto;
+        min-height: 36svh;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        padding: var(--gx);
+        column-gap: var(--gc);
+        row-gap: 24px;
+        position: relative;
+      }
+
+      .divider {
+        display: none;
+      }
+
+      .logo {
+        position: static;
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+        align-self: start;
+      }
+
+      .menu-btn {
+        position: static;
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        justify-self: end;
+        align-self: start;
+      }
+
+      .pill-cta {
+        position: static;
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        justify-self: end;
+        align-self: center;
+      }
+
+      .headline {
+        position: static;
+        grid-column: 1 / 2;
+        grid-row: 3 / 4;
+        font-size: clamp(34px, calc((50vw - var(--gx) - var(--gc) / 2) / 7.3), 96px);
+        line-height: 0.9655;
+        white-space: normal;
+      }
+
+      .lead {
+        position: static;
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        width: 100%;
+        max-width: 30em;
+        font-size: clamp(16px, calc(0.55vw + 12px), 19px);
+        line-height: 1.42;
+      }
+
+      .lead-line {
+        display: inline;
+        white-space: normal;
+      }
+
+      main.media {
+        min-height: max(300px, 50svh);
+        margin: 0 var(--gx);
+        border-radius: 8px 8px 0 0;
+      }
+
+      .news-bar {
+        width: min(calc(800 * var(--u)), calc(100% - 2 * var(--gx)));
+        bottom: 20px;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       RESPONSIVE RULES (Mobile: max-width 679.98px)
+       ------------------------------------------------------------- */
+    @media (max-width: 679.98px) {
+      :root {
+        --gx: 20px;
+      }
+
+      .top {
+        min-height: 44svh;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+        row-gap: 20px;
+      }
+
+      .logo {
+        grid-column: 1 / 2;
+        grid-row: 1 / 2;
+      }
+
+      .menu-btn {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+      }
+
+      .headline {
+        grid-column: 1 / 3;
+        grid-row: 2 / 3;
+        font-size: clamp(32px, calc((100vw - 40px) / 7.3), 54px);
+        line-height: 1;
+      }
+
+      .lead {
+        grid-column: 1 / 3;
+        grid-row: 3 / 4;
+        font-size: 16.5px;
+        max-width: 32em;
+        padding-left: 14px;
+        border-left-width: 2px;
+      }
+
+      .pill-cta {
+        grid-column: 1 / 3;
+        grid-row: 4 / 5;
+        justify-self: end;
+      }
+
+      main.media {
+        min-height: max(300px, 46svh);
+      }
+
+      .news-bar {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        transform: none;
+        width: auto;
+        padding: 10px 8px 10px 14px;
+        gap: 12px;
+      }
+
+      /* Mobile menu stack below 680px */
+      .menu-preview,
+      .menu-svg,
+      .menu-caption {
+        display: none !important;
+      }
+
+      .destinations-nav {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 24px;
+        gap: 18px;
+        overflow-y: auto;
+      }
+
+      .dest-item {
+        position: static !important;
+        transform: none !important;
+      }
+
+      .dest-title {
+        font-size: clamp(25px, 8vw, 34px);
+      }
+    }
+
+    /* -------------------------------------------------------------
+       PREFERS-REDUCED-MOTION
+       ------------------------------------------------------------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .menu-wash {
+        clip-path: none !important;
+        transition: none !important;
+      }
+
+      .menu-preview {
+        clip-path: none !important;
+        transition: none !important;
+      }
+
+      .orbit-dot.center-dot {
+        r: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Editorial Band -->
+  <header class="top" id="top">
+    <!-- Vertical Hairline Divider -->
+    <div class="divider" aria-hidden="true"></div>
+
+    <!-- Logo -->
+    <a href="#" class="logo" aria-label="Novaryn home">
+      <svg class="logo-mark" viewBox="0 0 39 26" aria-hidden="true">
+        <path d="M0 26V0h6.9l18.2 17.2V0H32v26h-6.6L6.9 8.7V26Z" fill="#25251d" />
+        <path d="M34 20h5v6h-5Z" fill="#25251d" />
+      </svg>
+      <span class="logo-name">
+        Novaryn
+        <svg class="logo-star" viewBox="0 0 10 10" aria-hidden="true">
+          <path d="M5 0 6.25 3.75 10 5 6.25 6.25 5 10 3.75 6.25 0 5 3.75 3.75Z" fill="#25251d" />
+        </svg>
+      </span>
+    </a>
+
+    <!-- Menu Trigger Button -->
+    <button class="menu-btn" type="button" aria-label="Open navigation menu" aria-controls="site-menu" aria-expanded="false">
+      <span class="menu-label-stack">
+        <span class="menu-label-item menu-label-menu">Menu</span>
+        <span class="menu-label-item menu-label-close">Close</span>
+      </span>
+      <span class="menu-icon-wrap">
+        <svg class="menu-glyph-dots" viewBox="-18 -18 36 36" aria-hidden="true">
+          <circle cx="0" cy="0" r="2.45" fill="currentColor" />
+          <circle cx="15" cy="0" r="2.3" fill="currentColor" />
+          <circle cx="10.6066" cy="10.6066" r="2.3" fill="currentColor" />
+          <circle cx="0" cy="15" r="2.3" fill="currentColor" />
+          <circle cx="-10.6066" cy="10.6066" r="2.3" fill="currentColor" />
+          <circle cx="-15" cy="0" r="2.3" fill="currentColor" />
+          <circle cx="-10.6066" cy="-10.6066" r="2.3" fill="currentColor" />
+          <circle cx="0" cy="-15" r="2.3" fill="currentColor" />
+          <circle cx="10.6066" cy="-10.6066" r="2.3" fill="currentColor" />
+        </svg>
+        <span class="menu-glyph-x" aria-hidden="true"></span>
+      </span>
+    </button>
+
+    <!-- Pill "See Further" -->
+    <a href="#contact" id="contact" class="pill-cta">See Further</a>
+
+    <!-- Headline -->
+    <h1 class="headline" id="vision">
+      <span class="headline-line"><span class="headline-line-inner">Acceleration</span></span>
+      <span class="headline-line"><span class="headline-line-inner">Through Vision<span class="tm-mark">™</span></span></span>
+    </h1>
+
+    <!-- Lead -->
+    <p class="lead" id="systems">
+      <span class="lead-line">We imagine with pathfinders to discover frontiers</span>
+      <span class="lead-line">unfold worlds and shape technologies beyond physical</span>
+      <span class="lead-line">boundaries.</span>
+    </p>
+  </header>
+
+  <!-- Video Stage -->
+  <main class="media" id="research">
+    <video
+      id="hero"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      aria-label="Photonic lens focusing neural light into a violet beam"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20261005_183134_2d4380fd-64a0-459c-a1eb-add70a3e1a7b.mp4"
+    ></video>
+
+    <!-- News Bar Over Video -->
+    <div class="news-bar" role="region" aria-label="Latest announcement">
+      <p class="news-copy">Novaryn presents the blueprint for the next era of AI infrastructure.</p>
+      <a href="#" class="news-cta">View Next</a>
+    </div>
+  </main>
+
+  <!-- Orbit Menu Overlay -->
+  <div class="menu-overlay" id="site-menu" role="dialog" aria-modal="true" aria-label="Site Navigation">
+    <div class="menu-wash"></div>
+    <div class="menu-stage">
+      <!-- Circular Preview Container -->
+      <div class="menu-preview" id="menu-preview-circle">
+        <img src="assets/menu-about.webp" alt="About preview" class="preview-img active" data-index="1">
+        <img src="assets/menu-vision.webp" alt="Vision preview" class="preview-img" data-index="2">
+        <img src="assets/menu-systems.webp" alt="Systems preview" class="preview-img" data-index="3">
+        <img src="assets/menu-research.webp" alt="Research preview" class="preview-img" data-index="4">
+        <img src="assets/menu-journal.webp" alt="Journal preview" class="preview-img" data-index="5">
+        <img src="assets/menu-contact.webp" alt="Contact preview" class="preview-img" data-index="6">
+      </div>
+
+      <!-- SVG Spokes & Orbit Dots -->
+      <svg class="menu-svg" id="menu-orbit-svg" aria-hidden="true"></svg>
+
+      <!-- Six Navigation Destinations -->
+      <nav class="destinations-nav" id="destinations-nav">
+        <a href="#top" class="dest-item" data-index="1" data-angle="315" data-note="Who we are">
+          <span class="dest-num">01</span>
+          <span class="dest-title">About</span>
+        </a>
+        <a href="#vision" class="dest-item" data-index="2" data-angle="45" data-note="Why we exist">
+          <span class="dest-num">02</span>
+          <span class="dest-title">Vision</span>
+        </a>
+        <a href="#systems" class="dest-item" data-index="3" data-angle="90" data-note="What we shape">
+          <span class="dest-num">03</span>
+          <span class="dest-title">Systems</span>
+        </a>
+        <a href="#research" class="dest-item" data-index="4" data-angle="135" data-note="How we learn">
+          <span class="dest-num">04</span>
+          <span class="dest-title">Research</span>
+        </a>
+        <a href="#research" class="dest-item" data-index="5" data-angle="225" data-note="Notes from the frontier">
+          <span class="dest-num">05</span>
+          <span class="dest-title">Journal</span>
+        </a>
+        <a href="#contact" class="dest-item" data-index="6" data-angle="270" data-note="Begin together">
+          <span class="dest-num">06</span>
+          <span class="dest-title">Contact</span>
+        </a>
+      </nav>
+
+      <!-- Lower Left Caption -->
+      <div class="menu-caption" id="menu-caption">
+        <span class="caption-index" id="caption-index">Index / 06 destinations</span>
+        <span class="caption-note" id="caption-note">Hover a point to preview</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    (function () {
+      // 1. Reduced Motion Check & Video Handling
+      var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var heroVideo = document.getElementById('hero');
+      if (prefersReduced && heroVideo) {
+        heroVideo.removeAttribute('autoplay');
+        heroVideo.pause();
+      }
+
+      // 2. Entrance Animation via Web Animations API
+      if (!prefersReduced && document.documentElement.classList.contains('motion-pending')) {
+        var divider = document.querySelector('.divider');
+        var logo = document.querySelector('.logo');
+        var menuBtn = document.querySelector('.menu-btn');
+        var headlineLines = document.querySelectorAll('.headline-line-inner');
+        var lead = document.querySelector('.lead');
+        var cta = document.querySelector('.pill-cta');
+        var newsBar = document.querySelector('.news-bar');
+
+        var animations = [];
+
+        if (divider) {
+          animations.push(divider.animate([
+            { transform: 'scaleY(0)', opacity: 0 },
+            { transform: 'scaleY(1)', opacity: 1 }
+          ], { duration: 820, delay: 20, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'both' }));
+        }
+
+        if (logo) {
+          animations.push(logo.animate([
+            { transform: 'translateY(-8px)', opacity: 0 },
+            { transform: 'translateY(0)', opacity: 1 }
+          ], { duration: 560, delay: 90, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }));
+        }
+
+        if (menuBtn) {
+          animations.push(menuBtn.animate([
+            { transform: 'translateY(-8px)', opacity: 0 },
+            { transform: 'translateY(0)', opacity: 1 }
+          ], { duration: 520, delay: 170, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }));
+        }
+
+        if (headlineLines && headlineLines[0]) {
+          animations.push(headlineLines[0].animate([
+            { transform: 'translateY(0.72em)', clipPath: 'inset(0 0 100% 0)', opacity: 0 },
+            { transform: 'translateY(0)', clipPath: 'inset(0 0 0% 0)', opacity: 1 }
+          ], { duration: 790, delay: 250, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }));
+        }
+
+        if (headlineLines && headlineLines[1]) {
+          animations.push(headlineLines[1].animate([
+            { transform: 'translateY(0.72em)', clipPath: 'inset(0 0 100% 0)', opacity: 0 },
+            { transform: 'translateY(0)', clipPath: 'inset(0 0 0% 0)', opacity: 1 }
+          ], { duration: 840, delay: 360, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }));
+        }
+
+        if (lead) {
+          animations.push(lead.animate([
+            { transform: 'translateY(10px)', opacity: 0 },
+            { transform: 'translateY(0)', opacity: 1 }
+          ], { duration: 620, delay: 570, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }));
+        }
+
+        if (cta) {
+          animations.push(cta.animate([
+            { transform: 'translateY(10px) scale(0.985)', opacity: 0 },
+            { transform: 'translateY(0) scale(1)', opacity: 1 }
+          ], { duration: 520, delay: 730, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }));
+        }
+
+        if (newsBar) {
+          animations.push(newsBar.animate([
+            { transform: 'translate(-50%, 10px) scale(0.96, 1)', opacity: 0 },
+            { transform: 'translate(-50%, 0) scale(1, 1)', opacity: 1 }
+          ], { duration: 720, delay: 920, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' }));
+        }
+
+        var fallbackTimer = setTimeout(finishEntrance, 3000);
+
+        Promise.all(animations.map(function (a) { return a.finished; })).then(function () {
+          clearTimeout(fallbackTimer);
+          finishEntrance();
+        }).catch(function () {
+          finishEntrance();
+        });
+
+        function finishEntrance() {
+          document.documentElement.classList.remove('motion-pending');
+          animations.forEach(function (anim) {
+            try { anim.cancel(); } catch (err) {}
+          });
+        }
+      } else {
+        document.documentElement.classList.remove('motion-pending');
+      }
+
+      // 3. Orbit Menu Interaction & SVG Layout
+      var triggerBtn = document.querySelector('.menu-btn');
+      var menuOverlay = document.getElementById('site-menu');
+      var menuWash = document.querySelector('.menu-wash');
+      var menuStage = document.querySelector('.menu-stage');
+      var menuSvg = document.getElementById('menu-orbit-svg');
+      var previewCircle = document.getElementById('menu-preview-circle');
+      var previewImages = document.querySelectorAll('.preview-img');
+      var destItems = document.querySelectorAll('.dest-item');
+      var captionIndex = document.getElementById('caption-index');
+      var captionNote = document.getElementById('caption-note');
+
+      var isOpen = false;
+      var closeTimeout;
+      var settleTimeout;
+
+      function openMenu() {
+        if (isOpen) return;
+        isOpen = true;
+        clearTimeout(closeTimeout);
+
+        document.documentElement.classList.add('menu-open');
+        triggerBtn.setAttribute('aria-expanded', 'true');
+        triggerBtn.setAttribute('aria-label', 'Close navigation menu');
+
+        layoutOrbit();
+
+        var settleDelay = prefersReduced ? 0 : 1700;
+        settleTimeout = setTimeout(function () {
+          document.documentElement.classList.add('menu-settled');
+        }, settleDelay);
+      }
+
+      function closeMenu() {
+        if (!isOpen) return;
+        isOpen = false;
+        clearTimeout(settleTimeout);
+
+        document.documentElement.classList.remove('menu-settled');
+        document.documentElement.classList.remove('menu-open');
+        triggerBtn.setAttribute('aria-expanded', 'false');
+        triggerBtn.setAttribute('aria-label', 'Open navigation menu');
+
+        closeTimeout = setTimeout(function () {
+          // Cleared after reverse animation
+        }, 1300);
+      }
+
+      triggerBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (isOpen) {
+          closeMenu();
+        } else {
+          openMenu();
+        }
+      });
+
+      menuWash.addEventListener('click', closeMenu);
+
+      document.querySelector('.logo').addEventListener('click', function () {
+        if (isOpen) closeMenu();
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && isOpen) {
+          closeMenu();
+          triggerBtn.focus();
+        }
+
+        // Focus trap between trigger and destinations
+        if (e.key === 'Tab' && isOpen) {
+          var focusable = [triggerBtn].concat(Array.prototype.slice.call(destItems));
+          var first = focusable[0];
+          var last = focusable[focusable.length - 1];
+
+          if (e.shiftKey) {
+            if (document.activeElement === first) {
+              last.focus();
+              e.preventDefault();
+            }
+          } else {
+            if (document.activeElement === last) {
+              first.focus();
+              e.preventDefault();
+            }
+          }
+        }
+      });
+
+      destItems.forEach(function (link) {
+        link.addEventListener('click', function () {
+          closeMenu();
+        });
+
+        // Hover & focus preview & spoken logic
+        link.addEventListener('mouseenter', function () {
+          activateDestination(link);
+        });
+        link.addEventListener('focus', function () {
+          activateDestination(link);
+        });
+
+        link.addEventListener('mouseleave', deactivateDestination);
+        link.addEventListener('blur', deactivateDestination);
+      });
+
+      function activateDestination(link) {
+        var idx = link.getAttribute('data-index');
+        var note = link.getAttribute('data-note');
+
+        menuStage.classList.add('has-hover');
+
+        destItems.forEach(function (d) {
+          d.classList.toggle('is-hovered', d === link);
+        });
+
+        var spokesOuter = document.querySelectorAll('.orbit-spoke-outer');
+        spokesOuter.forEach(function (s) {
+          var match = s.getAttribute('data-index') === idx;
+          s.classList.toggle('is-hovered', match);
+          if (match) {
+            s.style.stroke = 'var(--color-accent)';
+            s.style.strokeOpacity = '1';
+          } else {
+            s.style.stroke = '';
+            s.style.strokeOpacity = '';
+          }
+        });
+
+        var spokesInner = document.querySelectorAll('.orbit-spoke-inner');
+        spokesInner.forEach(function (s) {
+          var match = s.getAttribute('data-index') === idx;
+          s.classList.toggle('is-hovered', match);
+          if (match) {
+            s.setAttribute('x2', s.getAttribute('data-full-x2'));
+            s.setAttribute('y2', s.getAttribute('data-full-y2'));
+            s.style.stroke = 'var(--color-accent)';
+          } else {
+            s.setAttribute('x2', s.getAttribute('data-rest-x2'));
+            s.setAttribute('y2', s.getAttribute('data-rest-y2'));
+            s.style.stroke = '';
+          }
+        });
+
+        var dots = document.querySelectorAll('.orbit-dot');
+        dots.forEach(function (dot) {
+          var isCurrent = dot.getAttribute('data-index') === idx;
+          dot.classList.toggle('is-hovered', isCurrent);
+          if (isCurrent) {
+            dot.style.transform = 'scale(1.5)';
+            dot.style.fill = 'var(--color-accent)';
+          } else {
+            dot.style.transform = 'scale(1)';
+            dot.style.fill = '';
+          }
+        });
+
+        previewImages.forEach(function (img) {
+          img.classList.toggle('active', img.getAttribute('data-index') === idx);
+        });
+
+        if (captionIndex && captionNote) {
+          captionIndex.textContent = 'Index / 0' + idx + ' — 06';
+          captionNote.textContent = note;
+        }
+      }
+
+      function deactivateDestination() {
+        menuStage.classList.remove('has-hover');
+
+        destItems.forEach(function (d) {
+          d.classList.remove('is-hovered');
+        });
+
+        var spokesOuter = document.querySelectorAll('.orbit-spoke-outer');
+        spokesOuter.forEach(function (s) {
+          s.classList.remove('is-hovered');
+          s.style.stroke = '';
+          s.style.strokeOpacity = '';
+        });
+
+        var spokesInner = document.querySelectorAll('.orbit-spoke-inner');
+        spokesInner.forEach(function (s) {
+          s.classList.remove('is-hovered');
+          s.setAttribute('x2', s.getAttribute('data-rest-x2'));
+          s.setAttribute('y2', s.getAttribute('data-rest-y2'));
+          s.style.stroke = '';
+        });
+
+        var dots = document.querySelectorAll('.orbit-dot');
+        dots.forEach(function (dot) {
+          dot.classList.remove('is-hovered');
+          dot.style.transform = 'scale(1)';
+          dot.style.fill = '';
+        });
+
+        previewImages.forEach(function (img, i) {
+          img.classList.toggle('active', i === 0);
+        });
+
+        if (captionIndex && captionNote) {
+          captionIndex.textContent = 'Index / 06 destinations';
+          captionNote.textContent = 'Hover a point to preview';
+        }
+      }
+
+      // Orbit Layout Calculation
+      function layoutOrbit() {
+        if (window.innerWidth < 680) return;
+
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+
+        var centerX = w * 0.5;
+        var centerY = (h * 0.5) + 18;
+
+        var radius = Math.max(110, Math.min(w * 0.20, (h - 190) * 0.37));
+
+        // Center preview circle
+        var previewDiameter = 1.24 * radius;
+        if (previewCircle) {
+          previewCircle.style.width = previewDiameter + 'px';
+          previewCircle.style.height = previewDiameter + 'px';
+          previewCircle.style.left = centerX + 'px';
+          previewCircle.style.top = centerY + 'px';
+        }
+
+        // Glyph coordinates for dots & wash origin
+        var iconWrap = document.querySelector('.menu-icon-wrap');
+        var iconRect = iconWrap ? iconWrap.getBoundingClientRect() : null;
+        var glyphX = iconRect ? (iconRect.left + iconRect.width / 2) : (w - 38);
+        var glyphY = iconRect ? (iconRect.top + iconRect.height / 2) : 37;
+
+        // Clear SVG
+        while (menuSvg.firstChild) {
+          menuSvg.removeChild(menuSvg.firstChild);
+        }
+
+        // Center dot
+        var centerCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        centerCircle.setAttribute('cx', centerX);
+        centerCircle.setAttribute('cy', centerY);
+        centerCircle.setAttribute('r', '6'); // 12px diameter
+        centerCircle.setAttribute('class', 'orbit-dot center-dot');
+        menuSvg.appendChild(centerCircle);
+
+        if (!prefersReduced) {
+          centerCircle.animate([
+            { cx: glyphX, cy: glyphY, opacity: 0 },
+            { cx: centerX, cy: centerY, opacity: 1 }
+          ], {
+            duration: 700,
+            easing: 'cubic-bezier(.16,1,.3,1)',
+            fill: 'both'
+          });
+        }
+
+        // 8 points on orbit (every 45 deg: 0, 45, 90, 135, 180, 225, 270, 315)
+        var allAngles = [0, 45, 90, 135, 180, 225, 270, 315];
+
+        allAngles.forEach(function (ang) {
+          var rad = (ang * Math.PI) / 180;
+          var x = centerX + radius * Math.cos(rad);
+          var y = centerY + radius * Math.sin(rad);
+
+          // Find if destination corresponds to this angle
+          var matchingLink = null;
+          destItems.forEach(function (link) {
+            if (parseInt(link.getAttribute('data-angle'), 10) === ang) {
+              matchingLink = link;
+            }
+          });
+
+          var isDestination = Boolean(matchingLink);
+          var dotRadius = isDestination ? 7 : 3.5; // active 14px, idle 7px
+
+          // Outer spoke (draws outward in ink at 50% opacity)
+          var spokeOuter = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          spokeOuter.setAttribute('x1', x);
+          spokeOuter.setAttribute('y1', y);
+          spokeOuter.setAttribute('x2', centerX + (radius + 28) * Math.cos(rad));
+          spokeOuter.setAttribute('y2', centerY + (radius + 28) * Math.sin(rad));
+          spokeOuter.setAttribute('class', 'orbit-spoke-outer');
+          if (matchingLink) {
+            spokeOuter.setAttribute('data-index', matchingLink.getAttribute('data-index'));
+          }
+          menuSvg.appendChild(spokeOuter);
+
+          // Inward spoke (draws inward in accent; scales to full length on hover)
+          var spokeInner = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          var restLen = 22;
+          var restX2 = x - restLen * Math.cos(rad);
+          var restY2 = y - restLen * Math.sin(rad);
+          var fullX2 = centerX + (previewDiameter * 0.46) * Math.cos(rad);
+          var fullY2 = centerY + (previewDiameter * 0.46) * Math.sin(rad);
+
+          spokeInner.setAttribute('x1', x);
+          spokeInner.setAttribute('y1', y);
+          spokeInner.setAttribute('x2', restX2);
+          spokeInner.setAttribute('y2', restY2);
+          spokeInner.setAttribute('data-rest-x2', restX2);
+          spokeInner.setAttribute('data-rest-y2', restY2);
+          spokeInner.setAttribute('data-full-x2', fullX2);
+          spokeInner.setAttribute('data-full-y2', fullY2);
+          spokeInner.setAttribute('class', 'orbit-spoke-inner');
+          if (matchingLink) {
+            spokeInner.setAttribute('data-index', matchingLink.getAttribute('data-index'));
+          }
+          menuSvg.appendChild(spokeInner);
+
+          // Dot (leaves glyph and lands on circle)
+          var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('cx', x);
+          circle.setAttribute('cy', y);
+          circle.setAttribute('r', dotRadius);
+          circle.setAttribute('fill', isDestination ? '#25251d' : 'rgba(37,37,29,0.3)');
+          circle.setAttribute('class', 'orbit-dot');
+          if (matchingLink) {
+            circle.setAttribute('data-index', matchingLink.getAttribute('data-index'));
+          }
+          menuSvg.appendChild(circle);
+
+          if (!prefersReduced) {
+            circle.animate([
+              { cx: glyphX, cy: glyphY, opacity: 0 },
+              { cx: x, cy: y, opacity: 1 }
+            ], {
+              duration: 750,
+              delay: 150 + (ang / 360) * 150,
+              easing: 'cubic-bezier(.16,1,.3,1)',
+              fill: 'both'
+            });
+          }
+
+          // Position destination links past outer spoke
+          if (matchingLink) {
+            var labelDist = radius + 38;
+            var lx = centerX + labelDist * Math.cos(rad);
+            var ly = centerY + labelDist * Math.sin(rad);
+
+            matchingLink.style.left = lx + 'px';
+            matchingLink.style.top = ly + 'px';
+
+            var baseTransform = 'translate(-50%, -50%)';
+            if (Math.cos(rad) > 0.3) {
+              baseTransform = 'translate(0%, -50%)';
+            } else if (Math.cos(rad) < -0.3) {
+              baseTransform = 'translate(-100%, -50%)';
+            }
+            matchingLink.style.transform = baseTransform;
+
+            // Labels blur in from 8px and travel along their angle, staggered from 0.95s by 0.06s per item
+            if (!prefersReduced) {
+              var itemIdx = parseInt(matchingLink.getAttribute('data-index'), 10) - 1;
+              var labelDelay = 950 + itemIdx * 60;
+              var travelOffset = 18;
+              var travelX = travelOffset * Math.cos(rad);
+              var travelY = travelOffset * Math.sin(rad);
+
+              matchingLink.animate([
+                { opacity: 0, filter: 'blur(8px)', transform: baseTransform + ' translate(' + (-travelX) + 'px, ' + (-travelY) + 'px)' },
+                { opacity: 1, filter: 'blur(0px)', transform: baseTransform }
+              ], {
+                duration: 650,
+                delay: labelDelay,
+                easing: 'cubic-bezier(.16,1,.3,1)',
+                fill: 'both'
+              });
+            }
+          }
+        });
+      }
+
+      window.addEventListener('resize', function () {
+        if (isOpen) {
+          layoutOrbit();
+        }
+      });
+    })();
+  </script>
+</body>
 </html>
