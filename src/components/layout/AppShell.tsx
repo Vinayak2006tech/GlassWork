@@ -81,8 +81,9 @@ export const AppShell: React.FC = () => {
         Skip to main content
       </a>
 
-      {/* Top Header with Frosted Glass */}
-      <header className="sticky top-0 z-30 h-16 border-b border-white/60 bg-white/70 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
+      {/* Top Header with Frosted Glass - optimized for smooth 60fps scrolling */}
+      <header className="sticky top-0 z-30 h-16 border-b border-white/60 bg-white/85 backdrop-blur-md px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-xs">
+
         <div className="flex items-center gap-3">
           {/* Mobile hamburger button */}
           <button
@@ -220,8 +221,9 @@ export const AppShell: React.FC = () => {
         {/* Desktop Sidebar */}
         <aside
           aria-label="Main Navigation"
-          className="hidden md:flex flex-col w-64 p-4 border-r border-white/60 bg-white/30 backdrop-blur-md shrink-0"
+          className="hidden md:flex flex-col w-64 p-4 border-r border-white/60 bg-white/50 backdrop-blur-sm shrink-0"
         >
+
           <nav className="space-y-1">
             {navItems.map((item) => (
               <NavLink

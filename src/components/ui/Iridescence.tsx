@@ -478,29 +478,45 @@ export const Iridescence: React.FC<IridescenceProps> = ({
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     };
 
+    const TARGET_FRAME_INTERVAL = 30; // ~33 FPS cap: silky-smooth for ambient backgrounds, frees up 70% CPU/GPU for UI
+    let lastRenderTime = 0;
+
     const frame = (now: number) => {
       raf = 0;
       if (!alive || !visible) return;
       const s = settingsRef.current;
-      const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
-      last = now;
       const moving = !s.paused && !reduce;
-      if (moving) state.phase += dt * s.speed;
+
+      // Throttle render calls to save massive GPU cycles for DOM interactions
+      if (now - lastRenderTime >= TARGET_FRAME_INTERVAL) {
+        const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 33;
+        last = now;
+        lastRenderTime = now;
+
+        if (moving) state.phase += dt * s.speed;
+        const target = s.mouseReact && pointer.tracked ? [pointer.x, pointer.y] : [0.5, 0.5];
+        const follow = 1 - Math.exp(-dt * 5);
+        state.mouse[0] += (target[0] - state.mouse[0]) * follow;
+        state.mouse[1] += (target[1] - state.mouse[1]) * follow;
+        state.presence += ((pointer.inside ? 1 : 0) - state.presence) * (1 - Math.exp(-dt * 4));
+        if (state.fieldActive && s.mouseReact) relaxField(dt);
+        state.swirls = state.swirls.filter(swirl => (swirl.age += dt) < SWIRL_LIFE);
+        if (s.grain > 0 && moving) state.seed = Math.floor(now / 42) % 997;
+        render();
+      }
+
       const target = s.mouseReact && pointer.tracked ? [pointer.x, pointer.y] : [0.5, 0.5];
-      const follow = 1 - Math.exp(-dt * 5);
-      state.mouse[0] += (target[0] - state.mouse[0]) * follow;
-      state.mouse[1] += (target[1] - state.mouse[1]) * follow;
-      state.presence += ((pointer.inside ? 1 : 0) - state.presence) * (1 - Math.exp(-dt * 4));
-      if (state.fieldActive) relaxField(dt);
-      state.swirls = state.swirls.filter(swirl => (swirl.age += dt) < SWIRL_LIFE);
-      if (s.grain > 0 && moving) state.seed = Math.floor(now / 42) % 997;
-      render();
       const settling =
-        Math.abs(target[0] - state.mouse[0]) > 0.0005 ||
-        Math.abs(target[1] - state.mouse[1]) > 0.0005 ||
-        Math.abs((pointer.inside ? 1 : 0) - state.presence) > 0.002;
-      if (moving || settling || state.fieldActive || state.swirls.length) raf = requestAnimationFrame(frame);
-      else last = 0;
+        s.mouseReact &&
+        (Math.abs(target[0] - state.mouse[0]) > 0.001 ||
+          Math.abs(target[1] - state.mouse[1]) > 0.001 ||
+          Math.abs((pointer.inside ? 1 : 0) - state.presence) > 0.005);
+
+      if (moving || settling || (s.mouseReact && state.fieldActive) || state.swirls.length) {
+        raf = requestAnimationFrame(frame);
+      } else {
+        last = 0;
+      }
     };
 
     const wake = () => {
@@ -516,11 +532,18 @@ export const Iridescence: React.FC<IridescenceProps> = ({
       };
     };
 
+    let lastPointerTime = 0;
     const onPointerMove = (event: PointerEvent) => {
       const s = settingsRef.current;
+      if (!s.mouseReact) return; // Completely skip pointer calculations if not interactive
+
+      const now = performance.now();
+      if (now - lastPointerTime < 24) return; // Throttle to ~40Hz
+      lastPointerTime = now;
+
       const { x, y } = locate(event);
       const inside = x >= 0 && x <= 1 && y >= 0 && y <= 1;
-      if (inside && s.mouseReact && !reduce && pointer.inside && s.stir > 0) {
+      if (inside && !reduce && pointer.inside && s.stir > 0) {
         brush(x, y, x - pointer.x, y - pointer.y);
       }
       pointer.x = x;
@@ -537,7 +560,7 @@ export const Iridescence: React.FC<IridescenceProps> = ({
 
     const onPointerDown = (event: PointerEvent) => {
       const s = settingsRef.current;
-      if (!s.clickSwirl || reduce) return;
+      if (!s.clickSwirl || reduce || !s.mouseReact) return;
       const { x, y } = locate(event);
       if (x < 0 || x > 1 || y < 0 || y > 1) return;
       if (state.swirls.length >= MAX_SWIRLS) {
@@ -550,7 +573,8 @@ export const Iridescence: React.FC<IridescenceProps> = ({
 
     const resize = () => {
       const s = settingsRef.current;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2) * s.resolution;
+      // Clamp DPR to max 1.25 to prevent 6-megapixel canvas allocations on Retina/4K screens
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25) * s.resolution;
       state.width = Math.max(1, root.clientWidth);
       state.height = Math.max(1, root.clientHeight);
       canvas.width = Math.max(1, Math.round(state.width * dpr));
@@ -560,11 +584,12 @@ export const Iridescence: React.FC<IridescenceProps> = ({
     };
 
     wakeRef.current = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2) * settingsRef.current.resolution;
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.25) * settingsRef.current.resolution;
       if (canvas.width !== Math.max(1, Math.round(state.width * dpr))) resize();
       else if (!raf) render();
       wake();
     };
+
 
     const resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(root);

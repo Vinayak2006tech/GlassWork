@@ -10,23 +10,25 @@ export const GlobalIridescenceBackground: React.FC = () => {
       <Iridescence
         color="#8099cc"
         hueShift={0}
-        saturation={1}
-        brightness={1.5}
+        saturation={0.9}
+        brightness={1.3}
         contrast={1}
-        speed={2.35}
-        scale={1}
-        detail={8}
-        warp={1}
+        speed={0.6}
+        scale={1.2}
+        detail={4}
+        warp={0.8}
         rotation={0}
-        mouseReact={true}
-        amplitude={0.1}
-        stir={0.5}
-        sheen={0.3}
-        clickSwirl={true}
+        mouseReact={false}
+        amplitude={0.05}
+        stir={0}
+        sheen={0.2}
+        clickSwirl={false}
         grain={0}
         fade={0}
-        opacity={0.85}
+        opacity={0.65}
+        resolution={0.55}
       />
+
     </div>
   );
 };
