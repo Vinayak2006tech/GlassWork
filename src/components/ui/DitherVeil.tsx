@@ -514,13 +514,14 @@ export const DitherVeil: React.FC<DitherVeilProps> = ({
     const noiseTexture = dataTexture();
     const diffusedTexture = dataTexture();
 
+    const gl2 = gl as unknown as WebGL2RenderingContext;
     const createMask = (w: number, h: number) =>
       new RenderTarget(gl, {
         width: w,
         height: h,
         depth: false,
-        type: floatMask ? gl.HALF_FLOAT : gl.UNSIGNED_BYTE,
-        internalFormat: floatMask ? gl.RGBA16F : gl.RGBA,
+        type: floatMask ? gl2.HALF_FLOAT : gl.UNSIGNED_BYTE,
+        internalFormat: floatMask ? gl2.RGBA16F : gl.RGBA,
         minFilter: gl.LINEAR,
         magFilter: gl.LINEAR,
       });
