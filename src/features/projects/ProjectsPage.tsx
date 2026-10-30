@@ -20,7 +20,7 @@ import {
   FolderPlus,
   FolderKanban,
 } from 'lucide-react';
-import { Iridescence } from '../../components/ui/Iridescence';
+import { MagicRings } from '../../components/ui/MagicRings';
 
 export const ProjectsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -102,16 +102,20 @@ export const ProjectsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Decorative Iridescence Hero Strip */}
+      {/* Decorative MagicRings Hero Strip */}
       <div className="w-full h-20 rounded-2xl overflow-hidden shadow-sm border border-white/20 relative flex items-center justify-between px-6 bg-slate-950">
         <div className="absolute inset-0 z-0 opacity-80">
-          <Iridescence
-            color="#8099cc"
-            speed={1.6}
-            scale={1.3}
-            detail={6}
-            brightness={1.3}
-            opacity={0.8}
+          <MagicRings
+            color="#818cf8"
+            colorTwo="#6366f1"
+            ringCount={4}
+            motion="pulse"
+            speed={0.7}
+            lineThickness={1.5}
+            glow={1.2}
+            tilt={20}
+            opacity={0.85}
+            theme="dark"
           />
         </div>
         <div className="absolute inset-0 bg-indigo-950/40 backdrop-blur-xs pointer-events-none" />

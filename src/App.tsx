@@ -12,7 +12,7 @@ import { ProjectsPage } from './features/projects/ProjectsPage';
 import { ProjectDetailsPage } from './features/tasks/ProjectDetailsPage';
 import { NotFoundPage } from './features/notfound/NotFoundPage';
 import { ErrorBoundaryFallback } from './components/layout/ErrorBoundaryFallback';
-import { GlobalIridescenceBackground } from './components/layout/GlobalIridescenceBackground';
+import { GlobalMagicRingsBackground } from './components/layout/GlobalMagicRingsBackground';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -30,8 +30,8 @@ export const App: React.FC = () => {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <BrowserRouter>
-            {/* Ambient interactive Iridescence background */}
-            <GlobalIridescenceBackground />
+            {/* Ambient interactive MagicRings background from React Bits */}
+            <GlobalMagicRingsBackground />
 
             <Toaster
               position="top-right"

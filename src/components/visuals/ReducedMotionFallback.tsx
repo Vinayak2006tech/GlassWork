@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layers, Sparkles, CheckCircle2, TrendingUp, Users } from 'lucide-react';
-import { Iridescence } from '../ui/Iridescence';
+import { MagicRings } from '../ui/MagicRings';
 
 interface ReducedMotionFallbackProps {
   variant?: 'login' | 'dashboard' | 'notfound';
@@ -18,13 +18,17 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
         className={`w-full h-24 rounded-2xl bg-slate-950 p-6 flex items-center justify-between overflow-hidden relative shadow-md border border-white/20 ${className}`}
       >
         <div className="absolute inset-0 z-0 opacity-80">
-          <Iridescence
-            color="#8099cc"
-            speed={1.8}
-            scale={1.2}
-            detail={6}
-            brightness={1.3}
-            opacity={0.8}
+          <MagicRings
+            color="#818cf8"
+            colorTwo="#6366f1"
+            ringCount={4}
+            motion="pulse"
+            speed={0.8}
+            lineThickness={1.6}
+            glow={1.2}
+            tilt={15}
+            opacity={0.85}
+            theme="dark"
           />
         </div>
         <div className="absolute inset-0 bg-indigo-950/40 backdrop-blur-xs pointer-events-none" />
@@ -54,7 +58,15 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
         className={`w-40 h-40 rounded-full flex items-center justify-center border border-white/30 shadow-inner overflow-hidden relative ${className}`}
       >
         <div className="absolute inset-0 z-0">
-          <Iridescence color="#8099cc" speed={2} scale={0.8} opacity={0.85} />
+          <MagicRings
+            color="#818cf8"
+            colorTwo="#6366f1"
+            ringCount={3}
+            speed={1}
+            glow={1}
+            opacity={0.85}
+            theme="dark"
+          />
         </div>
         <div className="w-24 h-24 rounded-full glass-panel-opaque shadow-xl flex items-center justify-center text-indigo-600 font-extrabold text-3xl border border-white/80 relative z-10">
           404
@@ -70,13 +82,20 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
       className={`w-full h-full min-h-[460px] rounded-3xl bg-slate-950 p-8 flex flex-col justify-between overflow-hidden relative shadow-2xl border border-white/20 ${className}`}
     >
       <div className="absolute inset-0 z-0 opacity-85">
-        <Iridescence
-          color="#8099cc"
-          speed={2.2}
-          scale={1.0}
-          detail={8}
-          brightness={1.4}
+        <MagicRings
+          color="#a855f7"
+          colorTwo="#6366f1"
+          ringCount={6}
+          motion="pulse"
+          speed={1}
+          lineThickness={2}
+          glow={1.4}
+          tilt={20}
+          dispersion={0.15}
+          hoverScale={1.2}
+          clickBurst={true}
           opacity={0.85}
+          theme="dark"
         />
       </div>
       <div className="absolute inset-0 bg-indigo-950/35 backdrop-blur-xs pointer-events-none" />
