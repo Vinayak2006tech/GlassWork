@@ -27,8 +27,10 @@ describe('Dashboard Page Metrics & Error Resilience', () => {
     await waitFor(
       () => {
         expect(screen.getByText('Workspace Dashboard')).toBeInTheDocument();
+        expect(screen.getByText('Total Projects')).toBeInTheDocument();
         expect(screen.getByText('Total Tasks')).toBeInTheDocument();
         expect(screen.getByText('Overall Workspace Completion')).toBeInTheDocument();
+        expect(screen.getByText('Projects Overview')).toBeInTheDocument();
       },
       { timeout: 3000 }
     );

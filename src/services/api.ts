@@ -1,4 +1,5 @@
 import { SEED_USERS, SEED_PROJECTS, SEED_TASKS } from '../data/seed';
+import type { User, Project, Task } from '../types/models';
 
 // Storage keys
 export const STORAGE_KEYS = {
@@ -40,6 +41,7 @@ export const setSimulateErrorToggle = (enabled: boolean): void => {
 
 /**
  * Initializes the localStorage database with seed data on the first load only.
+ * Merges any newly added seed items so existing sessions automatically receive new sample records.
  */
 export const initializeStorage = (): void => {
   if (typeof window === 'undefined') return;
@@ -47,12 +49,35 @@ export const initializeStorage = (): void => {
   try {
     if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(SEED_USERS));
+    } else {
+      const currentUsers = getStoredItem<User[]>(STORAGE_KEYS.USERS, []);
+      const userIds = new Set(currentUsers.map((u) => u.id));
+      const missingUsers = SEED_USERS.filter((u) => !userIds.has(u.id));
+      if (missingUsers.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([...currentUsers, ...missingUsers]));
+      }
     }
+
     if (!localStorage.getItem(STORAGE_KEYS.PROJECTS)) {
       localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(SEED_PROJECTS));
+    } else {
+      const currentProjects = getStoredItem<Project[]>(STORAGE_KEYS.PROJECTS, []);
+      const projectIds = new Set(currentProjects.map((p) => p.id));
+      const missingProjects = SEED_PROJECTS.filter((p) => !projectIds.has(p.id));
+      if (missingProjects.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify([...currentProjects, ...missingProjects]));
+      }
     }
+
     if (!localStorage.getItem(STORAGE_KEYS.TASKS)) {
       localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(SEED_TASKS));
+    } else {
+      const currentTasks = getStoredItem<Task[]>(STORAGE_KEYS.TASKS, []);
+      const taskIds = new Set(currentTasks.map((t) => t.id));
+      const missingTasks = SEED_TASKS.filter((t) => !taskIds.has(t.id));
+      if (missingTasks.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify([...currentTasks, ...missingTasks]));
+      }
     }
   } catch (error) {
     console.error('Failed to initialize local storage database:', error);

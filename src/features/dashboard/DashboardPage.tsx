@@ -34,8 +34,8 @@ export const DashboardPage: React.FC = () => {
         <div className="w-full h-24 rounded-2xl bg-slate-200" />
 
         {/* Stat Cards Skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {[...Array(5)].map((_, i) => (
             <div key={i} className="h-28 rounded-xl bg-slate-200" />
           ))}
         </div>
@@ -66,7 +66,8 @@ export const DashboardPage: React.FC = () => {
   }
 
   const allTasks = tasks || [];
-  const projectMap = new Map((projects || []).map((p) => [p.id, p]));
+  const projectList = projects || [];
+  const projectMap = new Map(projectList.map((p) => [p.id, p]));
   const stats = calculateTaskStats(allTasks);
 
   if (allTasks.length === 0) {
@@ -97,22 +98,34 @@ export const DashboardPage: React.FC = () => {
       {/* Dashboard Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Workspace Dashboard
-          </h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Workspace Dashboard
+            </h1>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-100 text-violet-800 border border-violet-200/60 shadow-xs">
+              {projectList.length} {projectList.length === 1 ? 'Project' : 'Projects'}
+            </span>
+          </div>
           <p className="text-sm text-slate-500 mt-0.5">
             Real-time project overview, throughput, and deadline risks
           </p>
         </div>
         <Link to="/projects">
           <Button variant="outline" size="sm" rightIcon={<ArrowRight className="w-4 h-4" />}>
-            Manage Projects
+            Manage Projects ({projectList.length})
           </Button>
         </Link>
       </div>
 
-      {/* 4 Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* 5 Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <StatCard
+          title="Total Projects"
+          value={projectList.length}
+          icon={<FolderKanban className="w-5 h-5" />}
+          subtitle="Active workspaces"
+          iconBgColor="bg-violet-50 text-violet-600 border border-violet-100/60"
+        />
         <StatCard
           title="Total Tasks"
           value={stats.total}
@@ -152,6 +165,70 @@ export const DashboardPage: React.FC = () => {
           label="Overall Workspace Completion"
           size="lg"
         />
+      </GlassCard>
+
+      {/* Projects Overview Grid */}
+      <GlassCard className="p-6">
+        <div className="flex items-center justify-between pb-3 border-b border-white/60 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 rounded-lg bg-violet-50 text-violet-600">
+              <FolderKanban className="w-4 h-4" aria-hidden="true" />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-slate-900">Projects Overview</h2>
+              <p className="text-xs text-slate-500">
+                Performance and progress across all {projectList.length} workspaces
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/projects"
+            className="text-xs font-medium text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1 group"
+          >
+            <span>View All</span>
+            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {projectList.map((project) => {
+            const projectTasks = allTasks.filter((t) => t.projectId === project.id);
+            const pStats = calculateTaskStats(projectTasks);
+            return (
+              <Link
+                key={project.id}
+                to={`/projects/${project.id}`}
+                className="group p-3.5 rounded-xl bg-white/40 hover:bg-white/80 border border-white/60 hover:border-indigo-200 transition-all shadow-xs hover:shadow-sm flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                    <h3 className="text-xs font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
+                      {project.name}
+                    </h3>
+                    <span className="text-[11px] font-bold text-indigo-600 shrink-0">
+                      {pStats.completionPercentage}%
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 line-clamp-1 mb-2.5">
+                    {project.description}
+                  </p>
+                </div>
+                <div>
+                  <div className="w-full bg-slate-200/80 rounded-full h-1.5 overflow-hidden mb-2">
+                    <div
+                      className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300"
+                      style={{ width: `${pStats.completionPercentage}%` }}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <span>{projectTasks.length} {projectTasks.length === 1 ? 'task' : 'tasks'}</span>
+                    <span className="text-emerald-600 font-medium">{pStats.done} done</span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
       </GlassCard>
 
       {/* 2 Lists: Overdue Tasks & Due in Next 7 Days */}
