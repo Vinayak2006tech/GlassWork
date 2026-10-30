@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  getSimulateErrorToggle,
-  setSimulateErrorToggle,
-  resetStorageToSeed,
-} from '../../services/api';
+import { systemService } from '../../services/systemService';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Bug, RotateCcw } from 'lucide-react';
 
 export const Footer: React.FC = () => {
-  const [simulateError, setSimulateError] = useState(getSimulateErrorToggle);
+  const [simulateError, setSimulateError] = useState(() => systemService.isSimulateErrorActive());
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -25,7 +21,7 @@ export const Footer: React.FC = () => {
 
   const handleToggle = (checked: boolean) => {
     setSimulateError(checked);
-    setSimulateErrorToggle(checked);
+    systemService.setSimulateError(checked);
     if (checked) {
       toast.error('Simulated API errors ENABLED. API calls will now fail.', {
         id: 'simulate-error-toast',
@@ -39,7 +35,7 @@ export const Footer: React.FC = () => {
 
   const handleResetData = () => {
     if (window.confirm('Reset all tasks and projects back to initial seed data?')) {
-      resetStorageToSeed();
+      systemService.resetWorkspaceData();
       queryClient.invalidateQueries();
       toast.success('Data reset back to original seed data!');
     }
@@ -85,7 +81,7 @@ export const Footer: React.FC = () => {
             type="button"
             onClick={handleResetData}
             className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded px-2 py-1 transition-colors"
-            title="Reset localStorage back to initial 20 seed tasks"
+            title="Reset workspace demo data back to initial seed state"
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Reset Demo Data</span>
