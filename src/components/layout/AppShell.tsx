@@ -120,10 +120,10 @@ export const AppShell: React.FC = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-base tracking-tight text-slate-900 leading-tight">
-                Axionix
+                Team Task Tracker
               </span>
               <span className="text-[10px] uppercase font-semibold tracking-wider text-indigo-600">
-                Task Tracker
+                Workspace Hub
               </span>
             </div>
           </NavLink>
@@ -279,9 +279,9 @@ export const AppShell: React.FC = () => {
                   <div className="flex items-center justify-between px-4 pb-4 border-b border-slate-100">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold">
-                        A
+                        T
                       </div>
-                      <span className="font-bold text-slate-900">Axionix Menu</span>
+                      <span className="font-bold text-slate-900">Task Tracker Menu</span>
                     </div>
                     <button
                       type="button"

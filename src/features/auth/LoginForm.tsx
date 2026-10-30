@@ -85,7 +85,7 @@ export const LoginForm: React.FC = () => {
           </svg>
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-          Sign in to Axionix
+          Sign in to Team Task Tracker
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           Team Task Tracker & Collaboration Workspace

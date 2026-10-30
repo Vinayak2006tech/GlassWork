@@ -45,9 +45,9 @@ export const Footer: React.FC = () => {
     <footer className="mt-auto border-t border-slate-200/80 bg-white/70 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-3.5 text-xs text-slate-500">
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className="font-semibold text-slate-700">Axionix Task Tracker</span>
+          <span className="font-semibold text-slate-700">Team Task Tracker</span>
           <span className="text-slate-300" aria-hidden="true">|</span>
-          <span>Frontend Engineering Internship Assignment</span>
+          <span>Frontend Engineering Assignment</span>
         </div>
 
         {/* Live Controls: Simulate Error & Reset Seed */}

@@ -104,7 +104,7 @@ export const ReducedMotionFallback: React.FC<ReducedMotionFallbackProps> = ({
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-2 text-indigo-200 text-xs font-semibold tracking-wider uppercase">
           <Layers className="w-4 h-4 text-indigo-400" />
-          <span>Axionix Enterprise Platform</span>
+          <span>Team Task Tracker Platform</span>
         </div>
         <span className="px-2.5 py-0.5 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-[11px] font-medium">
           v2.4

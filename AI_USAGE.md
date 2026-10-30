@@ -1,6 +1,6 @@
 # AI Usage Disclosure & Collaboration Log
 
-This document outlines the tools, prompts, human oversight, verification steps, and code refactorings involved in building the **Axionix Team Task Tracker**.
+This document outlines the tools, prompts, human oversight, verification steps, and code refactorings involved in building the **Team Task Tracker**.
 
 ---
 

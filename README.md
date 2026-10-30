@@ -1,6 +1,6 @@
-# Axionix Team Task Tracker 🚀
+# Team Task Tracker 🚀
 
-A production-quality, responsive **Team Task Tracker** web application engineered for the Axionix Frontend Engineering Internship assignment. Designed with a modern "Floating Glass Dashboard" aesthetic featuring an interactive ambient WebGL shader visual layer, accessible semantic UI, simulated asynchronous service layer, and comprehensive behavior-focused testing.
+A production-quality, responsive **Team Task Tracker** web application engineered with a modern "Floating Glass Dashboard" aesthetic featuring an interactive ambient WebGL shader visual layer, accessible semantic UI, simulated asynchronous service layer, and comprehensive behavior-focused testing.
 
 - **Time spent**: ~7 hours (architecture, glassmorphism design system, simulated service layer, Vitest test suites, and WCAG AA accessibility).
 
