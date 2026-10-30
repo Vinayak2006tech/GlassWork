@@ -94,7 +94,7 @@ src/
 ├── components/
 │   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback, GlobalIridescenceBackground
 │   ├── three/          # HeroScene (2D glass illustration), ReducedMotionFallback
-│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, DitherVeil, CommandPalette, KeyboardShortcutsModal
+│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, CommandPalette, KeyboardShortcutsModal
 ├── data/
 │   └── seed.ts         # 5 users, 4 projects, 20 tasks, dynamic date anchors
 ├── features/
