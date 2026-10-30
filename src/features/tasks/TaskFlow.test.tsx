@@ -85,4 +85,45 @@ describe('Task Management Flow & Modal Accessibility', () => {
       expect(addTaskBtn).toHaveFocus();
     });
   });
+
+  // Test: Rejects invalid calendar dates like 2026-13-45
+  it('rejects task creation and displays an error when an invalid calendar date is entered', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/projects/:id" element={<ProjectDetailsPage />} />
+      </Routes>,
+      { initialEntries: ['/projects/proj-1'] }
+    );
+
+    expect(await screen.findByText('Core Design System')).toBeInTheDocument();
+
+    const addTaskBtn = screen.getByRole('button', { name: /add task/i });
+    await user.click(addTaskBtn);
+
+    expect(await screen.findByRole('dialog')).toBeInTheDocument();
+
+    // Type valid title
+    const titleInput = screen.getByLabelText(/task title/i);
+    await user.type(titleInput, 'Task With Invalid Date');
+
+    // Set invalid calendar date: 2026-13-45
+    const dateInput = screen.getByLabelText(/due date/i);
+    await user.clear(dateInput);
+    await user.type(dateInput, '2026-13-45');
+
+    const submitBtn = screen.getByRole('button', { name: /create task/i });
+    await user.click(submitBtn);
+
+    // Form should reject submission and show validation error
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Due date is required|Please enter a valid calendar date/i)
+      ).toBeInTheDocument();
+    });
+
+    // Modal stays open
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
 });

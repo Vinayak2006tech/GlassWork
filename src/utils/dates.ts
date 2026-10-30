@@ -63,3 +63,30 @@ export const getDueBadgeText = (dueDateStr: string, status?: TaskStatus): string
 
   return formatDate(dueDateStr, 'MMM d');
 };
+
+/**
+ * Strictly validates that a string is in YYYY-MM-DD format AND represents an authentic calendar date.
+ * Rejects invalid months (e.g. 13), invalid days (e.g. 45 or Feb 30), and accounts for leap years.
+ */
+export const isValidCalendarDate = (dateStr?: string | null): boolean => {
+  if (!dateStr || typeof dateStr !== 'string') return false;
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
+  if (!match) return false;
+
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+
+  if (month < 1 || month > 12 || day < 1 || day > 31) {
+    return false;
+  }
+
+  // Verify that month and day did not roll over in the Date constructor
+  const date = new Date(year, month - 1, day);
+  return (
+    date.getFullYear() === year &&
+    date.getMonth() === month - 1 &&
+    date.getDate() === day
+  );
+};
+

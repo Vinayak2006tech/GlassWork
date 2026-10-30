@@ -8,6 +8,7 @@ import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Task, TaskPriority, TaskStatus } from '../../types/models';
 import { useCreateTask, useUpdateTask, useUsers } from '../../hooks/useTasks';
+import { isValidCalendarDate } from '../../utils/dates';
 
 const taskSchema = z.object({
   title: z
@@ -21,7 +22,10 @@ const taskSchema = z.object({
   dueDate: z
     .string()
     .min(1, 'Due date is required')
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Please enter a valid date in YYYY-MM-DD format'),
+    .refine(
+      (val) => isValidCalendarDate(val),
+      'Please enter a valid calendar date in YYYY-MM-DD format (e.g. 2026-03-15)'
+    ),
 });
 
 type TaskFormData = z.infer<typeof taskSchema>;
