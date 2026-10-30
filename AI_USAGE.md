@@ -17,7 +17,7 @@ Key prompts and directives utilized during the implementation:
 2. *Enforce strict architectural boundaries: Components must never touch localStorage directly; all operations route strictly through `component -> hook -> service -> storage`.*
 3. *Implement simulated network delay and error injection engine with a runtime toggle in the application footer for demo evaluation.*
 4. *Design semantic, accessible UI with focus trapping, visible focus indicators, keyboard navigation, and explicit accessible labels.*
-5. *Design a modern "Floating Glass Dashboard" aesthetic using a lightweight ambient WebGL fluid shader (`<Iridescence />` powered by `ogl`), frosted glass cards (`<GlassCard />`), and graceful static fallbacks for `prefers-reduced-motion` and environments without WebGL.*
+5. *Design a modern "Floating Glass Dashboard" aesthetic using a lightweight ambient WebGL2 shader (`<MagicRings />` from React Bits), frosted glass cards (`<GlassCard />`), and graceful static fallbacks for `prefers-reduced-motion` and environments without WebGL.*
 6. *Construct a comprehensive, behavior-driven test suite with Vitest and React Testing Library covering authentication, project filtering, modal flows, keyboard accessibility, calendar date validation, and utility functions without fragile snapshots.*
 
 ---
@@ -32,12 +32,12 @@ Key prompts and directives utilized during the implementation:
   - `/projects`: Responsive grid, debounced URL search, project creation modal, and empty search state.
   - `/projects/:id`: Dual view (interactive Table and Kanban board), URL query filter controls (search, status, priority, assignee, sort), task creation/edit modal, and delete confirmation modal.
   - `/404`: Accessible not-found page with return home navigation.
-- **Testing Infrastructure**: `testUtils.tsx` provider wrapper and 31 automated tests across 9 test suites with Vitest + React Testing Library.
+- **Testing Infrastructure**: `testUtils.tsx` provider wrapper and 32 automated tests across 9 test suites with Vitest + React Testing Library.
 
 ---
 
 ## 🔍 What Was Verified and Refactored by Human Engineer
-1. **Elimination of Three.js & Bundle Optimization**: The initial AI scaffold proposed a heavy `@react-three/fiber` / Three.js 3D layer. This introduced over 800 KB of bundle overhead, continuous CPU-draining requestAnimationFrame loops, and brittle WebGL canvas mocking issues in headless JSDOM. I refactored the visual layer to eliminate Three.js entirely, replacing it with an ultra-lightweight ambient WebGL shader (`<Iridescence />` via `ogl`) that halts animation when `prefers-reduced-motion` is detected and smoothly falls back to CSS gradients when WebGL is unavailable.
+1. **Elimination of Three.js & Bundle Optimization**: The initial AI scaffold proposed a heavy `@react-three/fiber` / Three.js 3D layer. This introduced over 800 KB of bundle overhead, continuous CPU-draining requestAnimationFrame loops, and brittle WebGL canvas mocking issues in headless JSDOM. I refactored the visual layer to eliminate Three.js entirely, replacing it with an ultra-lightweight ambient WebGL2 shader (`<MagicRings />` from React Bits) that halts animation when `prefers-reduced-motion` is detected and smoothly falls back to CSS gradients when WebGL is unavailable.
 2. **Strict Service Layer Boundary**: Audited all UI components to verify that no component references `localStorage`. Discovered that `Footer.tsx` originally contained a direct reference in a tooltip string and internal flags; refactored all runtime developer controls and storage resets behind `src/services/systemService.ts`.
 3. **Calendar Date Validation Refinement**: Replaced naive date regex matching with a strict calendar validator (`isValidCalendarDate`) that verifies authentic year, month, and day combinations (rejecting invalid dates like `2026-13-45` and accounting for leap years).
 4. **ESLint Accessibility Compliance**: Enforced `eslint-plugin-jsx-a11y` rules to ensure proper form labels, `aria-describedby` for error messages, `role="alert"`, and `aria-current` on navigation links.

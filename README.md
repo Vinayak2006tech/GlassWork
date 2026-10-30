@@ -92,9 +92,9 @@ Component ➔ Hook ➔ Service ➔ Storage / Network Simulator
 ```
 src/
 ├── components/
-│   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback, GlobalIridescenceBackground
-│   ├── three/          # HeroScene (2D glass illustration), ReducedMotionFallback
-│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, Iridescence, CommandPalette, KeyboardShortcutsModal
+│   ├── layout/         # AppShell, Footer, ErrorBoundaryFallback, GlobalMagicRingsBackground
+│   ├── visuals/        # HeroScene (2D glass illustration), ReducedMotionFallback
+│   └── ui/             # Button, Input, Select, Modal, Badge, Spinner, EmptyState, ErrorMessage, StatCard, ProgressBar, GlassCard, MagicRings, CommandPalette, KeyboardShortcutsModal
 ├── data/
 │   └── seed.ts         # 5 users, 4 projects, 20 tasks, dynamic date anchors
 ├── features/
@@ -104,7 +104,7 @@ src/
 │   ├── projects/       # ProjectsPage, ProjectModal
 │   └── tasks/          # ProjectDetailsPage, TaskTable, KanbanBoard, TaskModal, DeleteTaskModal
 ├── hooks/              # useTasks, useProjects, useUsers, useDebounce, useAuth, usePrefersReducedMotion
-├── services/           # api.ts (delay + failure engine), authService, projectService, taskService, userService
+├── services/           # api.ts (delay + failure engine), authService, projectService, taskService, systemService
 ├── test/               # setup.ts, testUtils.tsx (renderWithProviders & visual mocks)
 ├── types/              # models.ts (User, Project, Task, TaskStats, TaskFilters)
 └── utils/              # filterAndSortTasks, taskStats, dates
@@ -125,11 +125,11 @@ src/
 
 ## 🧪 Simulated Service Layer & Error Injection
 
-All asynchronous operations flow through [api.ts](src/services/api.ts) via `simulateNetwork()`:
+All asynchronous operations flow through [api.ts](./src/services/api.ts) via `simulateNetwork()`:
 - **Configurable Network Delay**: Controlled by `VITE_API_DELAY_MS` in `.env` (default: `500ms`).
 - **Configurable Failure Rate**: Controlled by `VITE_API_FAILURE_RATE` in `.env` (default: `0`).
 - **Live "Simulate error" Toggle**: A visible checkbox toggle in the application footer allows reviewers to immediately force API failures on camera to verify error states and retry buttons.
-- **"Reset Demo Data" Trigger**: A footer button allowing reviewers to instantly restore the 20 initial seed tasks and 4 projects.
+- **"Reset Demo Data" Trigger**: A footer button allowing reviewers to instantly restore the initial seed tasks and projects.
 
 ---
 
@@ -151,9 +151,9 @@ All filter, search, and sort states on the Project Details page (`/projects/:id`
 
 ## 🎨 Modern Visual Layer & Glassmorphism Design System
 
-- **Interactive Ambient Background (`<Iridescence />`)**: Integrated the open-source `<Iridescence />` WebGL shader component from **React Bits** (powered by `ogl`) as a dynamic ambient backdrop with pointer reactivity, liquid stir, sheen, and click swirl effects.
-- **Behavior with `prefers-reduced-motion`**: When the user's OS preference has reduced motion enabled (`prefers-reduced-motion: reduce`), the shader loop automatically freezes animation progression, pointer tracking, and swirl dynamics to prevent motion sickness and respect accessibility guidelines.
-- **Behavior without WebGL**: If WebGL/WebGL2 is unavailable, unsupported by the GPU, or disabled in the browser (or in headless test environments like Vitest/JSDOM), `<Iridescence />` safely catches the absence of a WebGL context and aborts initialization gracefully without throwing errors. The application smoothly falls back to CSS-only background gradients (`.glass-mesh-bg`) ensuring 100% functionality, readability, and contrast for all interactive controls.
+- **Interactive Ambient Background (`<MagicRings />`)**: Integrated the open-source `<MagicRings />` WebGL2 shader component from **React Bits** as a dynamic ambient backdrop with dual-color blending (`#818cf8` to `#6366f1`), glowing pulse motion, cursor parallax, tilt depth, and interactive click bursts.
+- **Behavior with `prefers-reduced-motion`**: When the user's OS preference has reduced motion enabled (`prefers-reduced-motion: reduce`), the shader automatically halts animation loops, freezes pointer tracking, and turns off motion bursts to prevent motion sickness and respect accessibility guidelines.
+- **Behavior without WebGL**: If WebGL2 is unavailable, unsupported by the GPU, or disabled in the browser (or in headless test environments like Vitest/JSDOM), `<MagicRings />` safely catches the absence of a WebGL2 context and returns gracefully without throwing errors. The application smoothly falls back to CSS background gradients (`.glass-mesh-bg`) ensuring 100% functionality, readability, and contrast for all interactive controls.
 - **Glassmorphism Visual Accents**: Uses high-contrast 2D CSS visual cards (`<GlassCard />`) with frosted glass backgrounds (`backdrop-blur`), subtle borders, soft shadows, and team status metrics.
 - **Pure Semantic UI**: All forms, tables, modals, cards, and navigation are 100% semantic and accessible HTML controls layered on top of the ambient canvas.
 
@@ -177,7 +177,7 @@ Execute the test suite with the exact test command:
 npm test
 ```
 
-The test suite runs **21 automated tests across 8 test suites** using Vitest and React Testing Library, achieving a 100% pass rate:
+The test suite runs **32 automated tests across 9 test suites** using Vitest and React Testing Library, achieving a 100% pass rate:
 
 1. **`LoginForm.test.tsx` (3 tests)**:
    - Validates email and password required field validation errors.
@@ -188,9 +188,10 @@ The test suite runs **21 automated tests across 8 test suites** using Vitest and
    - Verifies status filtering (`TODO`, `IN_PROGRESS`, `DONE`).
    - Verifies priority filtering (`LOW`, `MEDIUM`, `HIGH`, `URGENT`).
    - Verifies assignee filtering and sorting by dueDate, priority, and title (ascending and descending).
-3. **`TaskFlow.test.tsx` (2 tests)**:
+3. **`TaskFlow.test.tsx` (3 tests)**:
    - Creates a new task through the modal and verifies it appears in the table.
    - Closes modal on `Escape` key press and restores focus to trigger button.
+   - Rejects invalid calendar dates (e.g. `2026-13-45`) with descriptive validation feedback.
 4. **`Dashboard.test.tsx` (2 tests)**:
    - Renders loading skeletons and transitions to live metric values.
    - Displays project and task quick-action navigation and hero strip.
@@ -200,12 +201,16 @@ The test suite runs **21 automated tests across 8 test suites** using Vitest and
 6. **`taskStats.test.ts` (2 tests)**:
    - Accurately computes total, completed, in-progress, overdue, and due soon counts.
    - Handles empty task lists without errors.
-7. **`Iridescence.test.tsx` (1 test)**:
-   - Renders ambient shader component container safely in headless JSDOM without WebGL context.
-8. **`PowerFeatures.test.tsx` (2 tests)**:
+7. **`dates.test.ts` (9 tests)**:
+   - Strict calendar date validation accepting valid dates and leap years (`2024-02-29`).
+   - Rejects invalid months (`2026-13-45`) and invalid days for month lengths (`2026-02-30`, `2026-04-31`).
+   - Formats ISO dates and verifies overdue / due soon status logic.
+8. **`MagicRings.test.tsx` (2 tests)**:
+   - Renders ambient shader component container safely in headless JSDOM without WebGL2 context.
+   - Verifies custom container className and inline style preservation.
+9. **`PowerFeatures.test.tsx` (2 tests)**:
    - Renders all three Kanban board columns, group status counts, and 1-click status advances.
    - Verifies multi-select checkbox workflows and floating batch action bar.
-
 
 ---
 
@@ -215,8 +220,7 @@ The test suite runs **21 automated tests across 8 test suites** using Vitest and
 - **Tailwind CSS**: Utility-first CSS framework.
 - **Headless UI**: Unstyled, accessible UI primitives (Dialog, Menu).
 - **Lucide Icons**: Consistent, semantic icon set.
-- **React Bits (`Iridescence`)**: Ambient fluid WebGL shader background component.
-- **ogl**: Minimal, performant WebGL library powering the Iridescence shader.
+- **React Bits (`MagicRings`)**: Ambient WebGL2 shader background component with reactive glowing pulse rings and interactive particle bursts.
 - **motion**: Modern animation library for smooth UI transitions and dialog reveals.
 - **date-fns**: Modular date math and formatting.
 - **Unsplash**: Royalty-free placeholder portrait avatars for seed team members in `src/data/seed.ts`.
