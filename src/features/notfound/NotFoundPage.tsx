@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HeroScene } from '../../components/three/HeroScene';
+import { HeroScene } from '../../components/visuals/HeroScene';
 import { Button } from '../../components/ui/Button';
 import { ArrowLeft, Home } from 'lucide-react';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoginForm } from './LoginForm';
-import { HeroScene } from '../../components/three/HeroScene';
+import { HeroScene } from '../../components/visuals/HeroScene';
 import { GlassCard } from '../../components/ui/GlassCard';
 
 export const LoginPage: React.FC = () => {

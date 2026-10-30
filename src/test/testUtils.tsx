@@ -5,8 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from '../features/auth/AuthContext';
 import { vi } from 'vitest';
 
-// Mock HeroScene so Three.js canvas doesn't attempt WebGL initialization in JSDOM
-vi.mock('../components/three/HeroScene', () => ({
+// Mock HeroScene for fast, deterministic headless rendering in JSDOM
+vi.mock('../components/visuals/HeroScene', () => ({
   HeroScene: ({ variant }: { variant: string }) => (
     <div data-testid={`mock-hero-scene-${variant}`} aria-hidden="true">
       Mock Hero Scene ({variant})

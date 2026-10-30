@@ -11,7 +11,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { ErrorMessage } from '../../components/ui/ErrorMessage';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { HeroScene } from '../../components/three/HeroScene';
+import { HeroScene } from '../../components/visuals/HeroScene';
 import {
   CheckCircle2,
   Clock,
